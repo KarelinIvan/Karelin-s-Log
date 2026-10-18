@@ -1,12 +1,13 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel import SQLModel
 
-from app.core.settings import settings
+import app.core.settings
+import app.models
 
 # Асинхронный движок
 engine = create_async_engine(
-    url=settings.DATABASE_URL,
-    echo=settings.DEBUG_SQLALCHEMY,
+    url=app.core.settings.settings.DATABASE_URL,
+    echo=app.core.settings.settings.DEBUG_SQLALCHEMY,
     pool_pre_ping=True,  # Проверяет соединение перед использованием
 )
 

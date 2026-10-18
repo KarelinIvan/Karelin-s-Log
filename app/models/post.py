@@ -1,6 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+from sqlalchemy import func
 from sqlmodel import Field
 
 from app.schemas.post_base import PostBase
@@ -38,8 +39,7 @@ class Post(PostBase, table=True):
         default_factory=lambda: datetime.now(ZoneInfo("UTC")),
         nullable=False,
         sa_column_kwargs={
-            "onupdate": "CURRENT_TIMESTAMP",
-            "server": "CURRENT_TIMESTAMP",
+            "onupdate": func.now(),
         },
         description="Дата изменения",
     )
