@@ -12,9 +12,9 @@
 
 
 ✨ Технологии (Стек)
-- Серверная часть / ORM: Python 3.14+, FastAPI 0.143.3, SQLModel 0.48.0
-- База данных: PostgreSQL (асинхронный доступ через sqlalchemy[asyncio] 2.1.5 и asyncpg 0.32.0)
-- Тестирование:
+- Серверная часть / ORM: Python, FastAPI, SQLModel
+- База данных: PostgreSQL (асинхронный доступ через sqlalchemy[asyncio] и asyncpg)
+- Тестирование: pytest, pytest-asyncio
 - Управление окружением: venv
 
 
