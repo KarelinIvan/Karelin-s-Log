@@ -1,7 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from sqlmodel import Field,
+from sqlmodel import Field
 
 from app.schemas.post_base import PostBase
 
