@@ -1,7 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from sqlmodel import Field
+from sqlmodel import Field,
 
 from app.schemas.post_base import PostBase
 
@@ -23,6 +23,9 @@ class Post(PostBase, table=True):
             `onupdate="CURRENT_TIMESTAMP"`. Это поле также имеет клиентский
             дефолт для корректной работы ORM.
     """
+
+    # явно задаем название таблицы в бд
+    __tablename__ = "posts"  # type: ignore
 
     id: int = Field(default=None, primary_key=True)
     created_at: datetime = Field(
