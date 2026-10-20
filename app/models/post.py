@@ -32,7 +32,7 @@ class Post(PostBase, table=True):
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(ZoneInfo("UTC")),
         nullable=False,
-        sa_column_kwargs={"server_default": "CURRENT_TIMESTAMP"},
+        sa_column_kwargs={"server_default": func.now()},
         description="Дата создания",
     )
     update_at: datetime = Field(
