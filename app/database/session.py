@@ -17,10 +17,10 @@ engine = create_async_engine(
 session = async_sessionmaker(engine, expire_on_commit=False)
 
 
-async def create_db_and_tables():
+async def create_db_and_tables(db_engine):
     """
     Создаёт таблицы в базе данных на основании моделей,
     унаследованных от SQLModel, у которых флаг table=True.
     """
-    async with engine.begin() as connect:
+    async with db_engine.begin() as connect:
         await connect.run_sync(SQLModel.metadata.create_all)
