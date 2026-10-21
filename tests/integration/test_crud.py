@@ -15,7 +15,7 @@ async def test_create_post(test_session):
     await test_session.commit()
     await test_session.refresh(post)
 
-    # Проверяем, что посту присвое ID
+    # Проверяем, что посту присвоен ID
     assert post.id is not None
     result = await test_session.exec(select(Post).where(Post.id == post.id))
     found = result.one()
