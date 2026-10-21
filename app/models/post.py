@@ -1,5 +1,4 @@
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import UTC, datetime
 
 from sqlalchemy import func
 from sqlmodel import Field
@@ -30,13 +29,13 @@ class Post(PostBase, table=True):
 
     id: int = Field(default=None, primary_key=True)
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(ZoneInfo("UTC")),
+        default_factory=lambda: datetime.now(UTC),
         nullable=False,
         sa_column_kwargs={"server_default": func.now()},
         description="Дата создания",
     )
     update_at: datetime = Field(
-        default_factory=lambda: datetime.now(ZoneInfo("UTC")),
+        default_factory=lambda: datetime.now(UTC),
         nullable=False,
         sa_column_kwargs={
             "onupdate": func.now(),
