@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlmodel import delete
+from sqlmodel import SQLModel, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Post
@@ -18,13 +18,12 @@ TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 @pytest.fixture
 async def test_engine():
     """
-    Фикстура проверяет задал ли путь к тестовой базе данных, в случае ошибки
-    fail() проваливает тест.
-    После проверки пути, создается тестовый движок.
-    Оператор yield, отдаёт обращение(engine) и приостанавливает фикстуру до
-    окончания теста.
-    После окнчания теста dispose() закрывает пул и свободные соединения
-    (даже если тест упал).
+    Фикстура проверяет, что TEST_DATABASE_URL задан и указывает на тестовую БД
+    (иначе pytest.fail). Затем создаёт engine, выполняет create_all для создания
+    таблиц и отдаёт engine тесту.
+
+    yield приостанавливает фикстуру до окончания теста.
+    После теста dispose() освобождает пул соединений (даже если тест упал).
     """
     url = TEST_DATABASE_URL
     if not url:
@@ -33,6 +32,10 @@ async def test_engine():
         pytest.fail("URL не похож на тестовую базу данных")
     # создаем тестовый движок
     engine = create_async_engine(url)
+
+    async with engine.begin() as connect:
+        await connect.run_sync(SQLModel.metadata.create_all)
+
     yield engine
     await engine.dispose()
 
