@@ -39,3 +39,20 @@ async def test_read_post(test_session, sample_post):
     assert found.title == sample_post.title
     assert found.description == sample_post.description
     assert found.published == sample_post.published
+
+
+async def test_update_post(test_session, sample_post):
+    """
+    Тест вызывает фикстуру sample_post для создания поста.
+    Меняет содержимое поля title и записывает изменения в базу данных.
+    Проверяет что поле title, update_at изменено.
+
+    """
+    old_update_at = sample_post.update_at
+    sample_post.title = "Новый тестовый заголовок"
+    await test_session.commit()
+    await test_session.refresh(sample_post)
+
+    # Проверяем что данные изменились
+    assert sample_post.title == "Новый тестовый заголовок"
+    assert sample_post.update_at > old_update_at
