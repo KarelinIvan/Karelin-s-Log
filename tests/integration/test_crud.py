@@ -24,3 +24,18 @@ async def test_create_post(test_session):
     assert found.title == post.title
     assert found.description == post.description
     assert found.published == post.published
+
+
+async def test_read_post(test_session, sample_post):
+    """
+    Тест вызывает фикстуру sample_post для создания поста.
+    Далее выполняется проверка чтения поста из базы данных по ID.
+    Выполняется проверка данных с исходными.
+    """
+    result = await test_session.exec(select(Post).where(Post.id == sample_post.id))
+    found = result.one()
+
+    # Проверяем, что данные сопадают с исходными
+    assert found.title == sample_post.title
+    assert found.description == sample_post.description
+    assert found.published == sample_post.published
