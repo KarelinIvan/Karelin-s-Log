@@ -1,0 +1,15 @@
+from datetime import datetime
+
+from app.schemas.post_base import PostBase
+
+
+class PostCreate(PostBase):
+    """Схема для добавления нового поста в базу данных"""
+
+
+class PostRead(PostBase):
+    """Схема для чтения одного поста из базы данных"""
+
+    id: int
+    created_at: datetime
+    updated_at: datetime

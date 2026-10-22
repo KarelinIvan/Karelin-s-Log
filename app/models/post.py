@@ -17,7 +17,7 @@ class Post(PostBase, table=True):
             Заполняется текущим временем UTC при добавлении новой записи как
             на уровне приложения (`default_factory`), так и на уровне
             базы данных (`server_default`).
-        update_at (datetime): Дата последнего изменения поста.
+        updated_at (datetime): Дата последнего изменения поста.
             Обновляется каждый раз при изменении записи. На уровне БД это
             происходит автоматически благодаря параметру
             `onupdate="CURRENT_TIMESTAMP"`. Это поле также имеет клиентский
@@ -34,7 +34,7 @@ class Post(PostBase, table=True):
         sa_column_kwargs={"server_default": func.now()},
         description="Дата создания",
     )
-    update_at: datetime = Field(
+    updated_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
         nullable=False,
         sa_column_kwargs={
