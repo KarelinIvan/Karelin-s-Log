@@ -1,4 +1,4 @@
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession, select
 
 from app.models import Post
 from app.schemas.post import PostCreate
@@ -28,3 +28,11 @@ class PostRepository:
         await self.session.commit()
         await self.session.refresh(post)
         return post
+
+    async def get_by_title(self, title: str) -> Post | None:
+        """
+        Ищет пост по заголовку.
+        Возвращает Post или None, если не найден.
+        """
+        result = await self.session.exec(select(Post).where(Post.title == title))
+        return result.first()
