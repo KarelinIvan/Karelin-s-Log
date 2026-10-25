@@ -1,4 +1,5 @@
-from sqlmodel.ext.asyncio.session import AsyncSession, select
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Post
 from app.schemas.post import PostCreate
