@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 import app.core.settings
 import app.models
@@ -14,7 +15,7 @@ engine = create_async_engine(
 # Фабрика асинхронных сессий для CRUD-операций через ORM
 # Отключаем expire_on_commit (по умолчанию флаг True),
 # чтобы объекты оставались валидными и готовыми к использованию
-session = async_sessionmaker(engine, expire_on_commit=False)
+session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def create_db_and_tables(db_engine):
