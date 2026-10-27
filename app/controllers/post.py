@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.controllers import post  # noqa: F401 — регистрирует эндпоинты
+from app.controllers import post  # noqa: F401, PLW0406
 from app.controllers.router import router
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
