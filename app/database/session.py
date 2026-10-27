@@ -24,3 +24,9 @@ async def create_db_and_tables(db_engine):
     """
     async with db_engine.begin() as connect:
         await connect.run_sync(SQLModel.metadata.create_all)
+
+
+async def get_session():
+    """Зависимость FastAPI: отдаёт сессию БД на время запроса."""
+    async with session() as db_session:
+        yield db_session
