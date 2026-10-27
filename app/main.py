@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.controllers import post  # noqa: F401 — регистрирует эндпоинты
+from app.controllers.router import router as post_router
 from app.database.session import create_db_and_tables, engine
 
 
@@ -13,12 +15,10 @@ async def lifespan(app: FastAPI):
     print("Выключение")
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
-
-@app.get("/home")
-async def get_home():
-    return {"message": "Сервер работает"}
+# Подключение роутеров
+app.include_router(post_router)
 
 
 if __name__ == "__main__":

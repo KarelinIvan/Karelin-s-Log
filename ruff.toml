@@ -1,0 +1,13 @@
+[lint.flake8-bugbear]
+# Разрешаем использование Depends и других функций FastAPI в аргументах по умолчанию
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Body",
+    "fastapi.Header",
+    "fastapi.Cookie",
+    "fastapi.Form",
+    "fastapi.File",
+    "fastapi.Security",
+]
