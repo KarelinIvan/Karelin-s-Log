@@ -1,3 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-router = APIRouter(prefix="/posts", tags=["posts"])
+from app.controllers.dependencies import log_request
+
+router = APIRouter(
+    prefix="/posts",
+    tags=["posts"],
+    dependencies=[Depends(log_request)],
+)
