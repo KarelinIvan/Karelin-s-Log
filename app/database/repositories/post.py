@@ -43,3 +43,5 @@ class PostRepository:
         Метод ищет пост по id.
         Возвращает Post или None, если не найден.
         """
+        result = await self.session.exec(select(Post).where(Post.id == post_id))
+        return result.first()
