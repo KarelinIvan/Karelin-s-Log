@@ -37,3 +37,9 @@ class PostRepository:
         """
         result = await self.session.exec(select(Post).where(Post.title == title))
         return result.first()
+
+    async def get_by_id(self, post_id: int) -> Post | None:
+        """
+        Метод ищет пост по id.
+        Возвращает Post или None, если не найден.
+        """
