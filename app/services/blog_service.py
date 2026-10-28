@@ -1,7 +1,11 @@
 from app.database.repositories.post import PostRepository
 from app.models.post import Post
 from app.schemas.post import PostCreate
-from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
+from app.services.exceptions import (
+    PostNotFoundError,
+    TitleAlreadyExistsError,
+    TitleEmptyError,
+)
 
 
 class BlogService:
@@ -27,3 +31,22 @@ class BlogService:
         if await self.repo.get_by_title(data.title):
             raise TitleAlreadyExistsError("Пост с таким title уже существует")
         return await self.repo.create(data)
+
+    async def get_post(self, post_id: int) -> Post:
+        """
+        Находит пост по его id.
+
+        Args:
+            post_id (int): ID поста.
+
+        Returns:
+            Post: Найден пост.
+
+        Raises:
+            PostNotFoundError: Если пост не найден.
+        """
+        post = await self.repo.get_by_id(post_id)
+
+        if not post:
+            raise PostNotFoundError(f"Пост с id: {post_id} не найден")
+        return post
