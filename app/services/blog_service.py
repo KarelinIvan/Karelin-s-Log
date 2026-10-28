@@ -25,5 +25,5 @@ class BlogService:
         if not data.title or not data.title.strip():
             raise TitleEmptyError("Title не может быть пустым")
         if await self.repo.get_by_title(data.title):
-            raise TitleAlreadyExistsError("Пост с таким заголовком уже существует")
+            raise TitleAlreadyExistsError("Пост с таким title уже существует")
         return await self.repo.create(data)
