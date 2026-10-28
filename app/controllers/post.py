@@ -7,7 +7,11 @@ from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostCreate, PostRead
 from app.services.blog_service import BlogService
-from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
+from app.services.exceptions import (
+    PostNotFoundError,
+    TitleAlreadyExistsError,
+    TitleEmptyError,
+)
 
 
 @router.post("/", response_model=PostRead, status_code=201)
@@ -15,6 +19,7 @@ async def create_post(
     data: PostCreate,
     session: AsyncSession = Depends(get_session),
 ):
+    """Создает новый пост в базе данных."""
     repo = PostRepository(session)
     service = BlogService(repo)
     try:
@@ -23,4 +28,19 @@ async def create_post(
         raise HTTPException(status_code=400, detail=str(e)) from e
     except TitleAlreadyExistsError as e:
         raise HTTPException(status_code=409, detail=str(e))
+    return post
+
+
+@router.get("/{post_id}", response_model=PostRead)
+async def get_post(
+    post_id: int,
+    session: AsyncSession = Depends(get_session),
+):
+    """Находит пост в базе данных по ID."""
+    repo = PostRepository(session)
+    service = BlogService(repo)
+    try:
+        post = await service.get_post(post_id)
+    except PostNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
     return post
