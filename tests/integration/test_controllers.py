@@ -61,7 +61,7 @@ async def test_get_post(async_client, sample_post):
 async def test_get_not_found(async_client):
     """Тест проверяет ошибку PostNotFoundError, если такого поста нет."""
     msg_id = 9999
-    response = await async_client.get(f"posts/{msg_id}")
+    response = await async_client.get(f"/posts/{msg_id}")
 
     assert response.status_code == 404
     data = response.json()
