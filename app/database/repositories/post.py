@@ -45,3 +45,8 @@ class PostRepository:
         """
         result = await self.session.exec(select(Post).where(Post.id == post_id))
         return result.first()
+
+    async def get_all(self) -> list[Post]:
+        """Метод возвращает все посты из базы данных."""
+        result = await self.session.exec(select(Post))
+        return list(result.all())
