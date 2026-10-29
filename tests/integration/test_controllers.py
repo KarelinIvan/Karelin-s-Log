@@ -45,3 +45,24 @@ async def test_create_post_title_already_exists(async_client, sample_post):
     assert response.status_code == 409
     data = response.json()
     assert data["detail"] == "Пост с таким title уже существует"
+
+
+async def test_get_post(async_client, sample_post):
+    """Тест проверяет успешное получение поста по ID, через api."""
+    response = await async_client.get(f"/posts/{sample_post.id}")
+
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["id"] == sample_post.id
+    assert data["title"] == sample_post.title
+
+
+async def test_get_not_found(async_client):
+    """Тест проверяет ошибку PostNotFoundError, если такого поста нет."""
+    msg_id = 9999
+    response = await async_client.get(f"posts/{msg_id}")
+
+    assert response.status_code == 404
+    data = response.json()
+    assert data["detail"] == f"Пост с id: {msg_id} не найден"
