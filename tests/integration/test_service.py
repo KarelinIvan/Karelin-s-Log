@@ -3,7 +3,11 @@ import pytest
 from app.database.repositories.post import PostRepository
 from app.schemas.post import PostCreate
 from app.services.blog_service import BlogService
-from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
+from app.services.exceptions import (
+    PostNotFoundError,
+    TitleAlreadyExistsError,
+    TitleEmptyError,
+)
 
 
 async def test_service_create_post(test_session):
@@ -40,3 +44,23 @@ async def test_title_already_exists_error(test_session, sample_post):
 
     with pytest.raises(TitleAlreadyExistsError):
         await service.create_post(data)
+
+
+async def test_service_get_post(test_session, sample_post):
+    """Тест проверяет успешное получение поста через сервис."""
+    repo = PostRepository(test_session)
+    service = BlogService(repo)
+
+    post = await service.get_post(sample_post.id)
+
+    assert post is not None
+    assert post.id == sample_post.id
+
+
+async def test_service_get_post_not_found(test_session):
+    """Тест проверяет ошибку PostNotFoundError, если поста нет."""
+    repo = PostRepository(test_session)
+    service = BlogService(repo)
+
+    with pytest.raises(PostNotFoundError):
+        await service.get_post(9999)

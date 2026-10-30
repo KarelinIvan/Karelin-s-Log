@@ -27,3 +27,19 @@ async def test_repository_create(test_session):
     assert found.title == data.title
     assert found.description == data.description
     assert found.published is False
+
+
+async def test_repository_get_by_id(test_session, sample_post):
+    """Тест проверяет поиск постов по ID в репозитории."""
+    repo = PostRepository(test_session)
+
+    # Ищем существующий пост (из фикстуры)
+    found = await repo.get_by_id(sample_post.id)
+
+    # Проверяем, что книга найдена и совпадает по ID
+    assert found is not None
+    assert found.id == sample_post.id
+
+    # Проверяем, что несуществующий ID возвращает None
+    missing_post = await repo.get_by_id(9999)
+    assert missing_post is None

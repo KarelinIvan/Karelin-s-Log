@@ -1,7 +1,11 @@
 from app.database.repositories.post import PostRepository
 from app.models.post import Post
-from app.schemas.post import PostCreate
-from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
+from app.schemas.post import PostCreate, PostUpdate
+from app.services.exceptions import (
+    PostNotFoundError,
+    TitleAlreadyExistsError,
+    TitleEmptyError,
+)
 
 
 class BlogService:
@@ -27,3 +31,64 @@ class BlogService:
         if await self.repo.get_by_title(data.title):
             raise TitleAlreadyExistsError("Пост с таким title уже существует")
         return await self.repo.create(data)
+
+    async def get_post(self, post_id: int) -> Post:
+        """
+        Находит пост по его id.
+
+        Args:
+            post_id (int): ID поста.
+
+        Returns:
+            Post: Найден пост.
+
+        Raises:
+            PostNotFoundError: Если пост не найден.
+        """
+        post = await self.repo.get_by_id(post_id)
+
+        if not post:
+            raise PostNotFoundError(f"Пост с id: {post_id} не найден")
+        return post
+
+    async def get_posts(self) -> list[Post]:
+        """Возвращает все посты из базы данных"""
+        return await self.repo.get_all()
+
+    async def update_post(self, post_id: int, data: PostUpdate) -> Post:
+        """
+        Обновляет пост частичными данными
+
+        Args:
+            post_id (int): ID поста для обновления.
+            data (PostUpdate): Поля для частичного обновления.
+        Raises:
+            PostNotFoundError: Если пост не найден.
+        """
+        post = await self.repo.get_by_id(post_id)
+
+        if not post:
+            raise PostNotFoundError(f"Пост с id: {post_id} не найден")
+
+        # Превращает Pydantic-схему в словарь
+        update_data = data.model_dump(exclude_unset=True)
+
+        # Передаём в репозиторий
+        return await self.repo.update(post, update_data)
+
+    async def delete_post(self, post_id: int) -> None:
+        """
+        Удаляет пост по id.
+
+        Args:
+            post_id (int): ID поста для удаления.
+
+        Raises:
+            PostNotFoundError: Если пост не найден.
+        """
+        post = await self.repo.get_by_id(post_id)
+
+        if not post:
+            raise PostNotFoundError(f"Пост с id: {post_id} не найден")
+
+        await self.repo.delete(post)
