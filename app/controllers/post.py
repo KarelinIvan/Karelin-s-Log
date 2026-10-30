@@ -5,7 +5,7 @@ from app.controllers import post  # noqa: F401, PLW0406
 from app.controllers.router import router
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
-from app.schemas.post import PostCreate, PostRead
+from app.schemas.post import PostCreate, PostRead, PostUpdate
 from app.services.blog_service import BlogService
 from app.services.exceptions import (
     PostNotFoundError,
@@ -56,3 +56,18 @@ async def get_posts(
 
     posts = await service.get_posts()
     return posts  # type: ignore
+
+
+@router.patch("/{post_id}", response_model=PostRead)
+async def update_post(
+    post_id: int, data: PostUpdate, session: AsyncSession = Depends(get_session)
+) -> PostRead:
+    """Обновляет пост частичными данными."""
+    repo = PostRepository(session)
+    service = BlogService(repo)
+
+    try:
+        post = await service.update_post(post_id, data)
+    except PostNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
+    return post  # type: ignore
