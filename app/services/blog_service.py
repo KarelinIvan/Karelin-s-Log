@@ -75,3 +75,20 @@ class BlogService:
 
         # Передаём в репозиторий
         return await self.repo.update(post, update_data)
+
+    async def delete_post(self, post_id: int) -> None:
+        """
+        Удаляет пост по id.
+
+        Args:
+            post_id (int): ID поста для удаления.
+
+        Raises:
+            PostNotFoundError: Если пост не найден.
+        """
+        post = await self.repo.get_by_id(post_id)
+
+        if not post:
+            raise PostNotFoundError(f"Пост с id: {post_id} не найден")
+
+        await self.repo.delete(post)
