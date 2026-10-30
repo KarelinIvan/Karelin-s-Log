@@ -69,8 +69,16 @@ class PostRepository:
             setattr(post, key, value)
 
         self.session.add(post)
-
         await self.session.commit()
         await self.session.refresh(post)
-
         return post
+
+    async def delete(self, post: Post):
+        """
+        Метод удаляет пост из базы данных.
+
+        Args:
+            post (Post): ORM-объект книги (уже найден и привязан к сессии).
+        """
+        await self.session.delete(post)
+        await self.session.commit()
