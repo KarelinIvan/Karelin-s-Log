@@ -66,3 +66,19 @@ async def test_get_not_found(async_client):
     assert response.status_code == 404
     data = response.json()
     assert data["detail"] == f"Пост с id: {msg_id} не найден"
+
+
+async def test_get_posts_empty(async_client, test_session):
+    """Тест проверяет пустой список, если постов нет."""
+    response = await async_client.get("/posts/")
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+async def test_get_posts(async_client, sample_post):
+    """Тест проверяет получение списка постов."""
+    response = await async_client.get("/posts/")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["id"] == sample_post.id
