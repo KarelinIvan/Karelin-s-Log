@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.controllers import post  # noqa: F401, PLW0406
@@ -71,3 +71,17 @@ async def update_post(
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
     return post  # type: ignore
+
+
+@router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_post(
+    post_id: int, session: AsyncSession = Depends(get_session)
+) -> None:
+    """Удаляет пост по ID."""
+    repo = PostRepository(session)
+    service = BlogService(repo)
+
+    try:
+        await service.delete_post(post_id)
+    except PostNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
