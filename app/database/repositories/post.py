@@ -50,3 +50,27 @@ class PostRepository:
         """Метод возвращает все посты из базы данных."""
         result = await self.session.exec(select(Post))
         return list(result.all())
+
+    async def update(self, post: Post, data: dict) -> Post:
+        """
+        Метод обновляет поля поста и сохраняет изменения в базу данных.
+        Обновляются только те поля, которые прислал пользователь,
+        остальные поля остаются без изменений.
+
+        Args:
+            post: ORM-объект поста.
+            data: Словарь с полями для обновления.
+
+        Returns:
+            Post: Обновлённый пост.
+        """
+        # Применяем изменения к объекту
+        for key, value in data.items():
+            setattr(post, key, value)
+
+        self.session.add(post)
+
+        await self.session.commit()
+        await self.session.refresh(post)
+
+        return post
