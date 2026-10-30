@@ -18,8 +18,8 @@ from app.services.exceptions import (
 async def create_post(
     data: PostCreate,
     session: AsyncSession = Depends(get_session),
-):
-    """Создает новый пост в базе данных."""
+) -> PostRead:
+    """Создаёт новый пост в базе данных."""
     repo = PostRepository(session)
     service = BlogService(repo)
     try:
@@ -27,20 +27,32 @@ async def create_post(
     except TitleEmptyError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except TitleAlreadyExistsError as e:
-        raise HTTPException(status_code=409, detail=str(e))
-    return post
+        raise HTTPException(status_code=409, detail=str(e)) from e
+    return post  # type: ignore
 
 
 @router.get("/{post_id}", response_model=PostRead)
 async def get_post(
     post_id: int,
     session: AsyncSession = Depends(get_session),
-):
+) -> PostRead:
     """Находит пост в базе данных по ID."""
     repo = PostRepository(session)
     service = BlogService(repo)
     try:
         post = await service.get_post(post_id)
     except PostNotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-    return post
+        raise HTTPException(status_code=404, detail=str(e)) from e
+    return post  # type: ignore
+
+
+@router.get("/", response_model=list[PostRead])
+async def get_posts(
+    session: AsyncSession = Depends(get_session),
+) -> list[PostRead]:
+    """Возвращает список всех постов"""
+    repo = PostRepository(session)
+    service = BlogService(repo)
+
+    posts = await service.get_posts()
+    return posts  # type: ignore
