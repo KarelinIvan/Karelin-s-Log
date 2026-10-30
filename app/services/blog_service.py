@@ -1,6 +1,6 @@
 from app.database.repositories.post import PostRepository
 from app.models.post import Post
-from app.schemas.post import PostCreate
+from app.schemas.post import PostCreate, PostUpdate
 from app.services.exceptions import (
     PostNotFoundError,
     TitleAlreadyExistsError,
@@ -54,3 +54,24 @@ class BlogService:
     async def get_posts(self) -> list[Post]:
         """Возвращает все посты из базы данных"""
         return await self.repo.get_all()
+
+    async def update_post(self, post_id: int, data: PostUpdate) -> Post:
+        """
+        Обновляет пост частичными данными
+
+        Args:
+            post_id (int): ID поста для обновления.
+            data (PostUpdate): Поля для частичного обновления.
+        Raises:
+            PostNotFoundError: Если пост не найден.
+        """
+        post = await self.repo.get_by_id(post_id)
+
+        if not post:
+            raise PostNotFoundError(f"Пост с ID {post_id} не найден")
+
+        # Превращает Pydantic-схему в словарь
+        update_data = data.model_dump(exclude_unset=True)
+
+        # Передаём в репозиторий
+        return await self.repo.update(post, update_data)
