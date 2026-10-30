@@ -13,3 +13,13 @@ class PostRead(PostBase):
     id: int
     created_at: datetime
     updated_at: datetime
+
+
+class PostUpdate(PostBase):
+    """Схема для частичного обновления поста."""
+
+    title: str | None
+    description: str | None
+
+    # Защита от лишних полей
+    model_config = {"extra": "forbid"}  # noqa: RUF012
