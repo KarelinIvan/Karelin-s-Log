@@ -18,8 +18,9 @@ class PostRead(PostBase):
 class PostUpdate(PostBase):
     """Схема для частичного обновления поста."""
 
-    title: str | None
-    description: str | None
+    title: str | None = None
+    description: str | None = None
+    published: bool | None = None
 
     # Защита от лишних полей
     model_config = {"extra": "forbid"}  # noqa: RUF012

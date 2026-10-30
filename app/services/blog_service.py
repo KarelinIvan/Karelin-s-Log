@@ -68,7 +68,7 @@ class BlogService:
         post = await self.repo.get_by_id(post_id)
 
         if not post:
-            raise PostNotFoundError(f"Пост с ID {post_id} не найден")
+            raise PostNotFoundError(f"Пост с id: {post_id} не найден")
 
         # Превращает Pydantic-схему в словарь
         update_data = data.model_dump(exclude_unset=True)
