@@ -99,7 +99,10 @@ async def test_update_post(async_client, sample_post):
 
 
 async def test_update_post_not_found(async_client):
-    """Тест проверяет ошибку 404 PostNotFoundError при обновлении несуществующего поста."""
+    """
+    Тест проверяет ошибку 404 PostNotFoundError,
+    при обновлении несуществующего поста.
+    """
     msg_id = 9999
     response = await async_client.patch(
         f"/posts/{msg_id}",
@@ -110,3 +113,24 @@ async def test_update_post_not_found(async_client):
 
     data = response.json()
     assert data["detail"] == f"Пост с id: {msg_id} не найден"
+
+
+async def test_delete_post(async_client, sample_post):
+    """Тест проверяет удаление поста из базы данных."""
+    response = await async_client.delete(f"/posts/{sample_post.id}")
+
+    assert response.status_code == 204
+
+    response_get = await async_client.get(f"/posts/{sample_post.id}")
+    assert response_get.status_code == 404
+
+
+async def test_delete_post_not_found(async_client):
+    """
+    Тест проверяет ошибку 404 PostNotFoundError,
+    при удалении несуществующего поста.
+    """
+    msg_id = 9999
+    response = await async_client.delete(f"/posts/{msg_id}")
+
+    assert response.status_code == 404
