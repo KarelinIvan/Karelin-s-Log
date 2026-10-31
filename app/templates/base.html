@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Karelin's log{% endblock %}</title>
     <!-- Здесь можно подключить CSS -->
-    <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        nav a { margin-right: 15px; }
-    </style>
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
+
 <body>
-    <nav>
-        <a href="/page">Главная</a>
-        <a href="#">Авторизация</a>
-        <!-- Позже здесь появятся другие ссылки (например, "Админка") -->
-    </nav>
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/page/">Karelin's log</a>
+                <ul>
+                    <li>
+                        <a href="#">Список всех публикаций</a>
+                    </li>
+                    <li>
+                        <a href="#">Обо мне</a>
+                    </li>
+                    <li>
+                        <a href="#">Поиск</a>
+                    </li>
+                </ul>
 
-    <hr>
+                <a href="#">Войти</a>
+                <!-- Позже здесь появятся другие ссылки (например, "Админка") -->
+            </nav>
+        </div>
+    </header>
 
-    <main>
-        {% block content %}
-        <!-- Сюда будет вставляться содержимое дочерних шаблонов -->
-        {% endblock %}
-    </main>
+    <section>
+        <div class="container">
+            <main class="content">
+                {% block content %}
+                <!-- Сюда будет вставляться содержимое дочерних шаблонов -->
+                {% endblock %}
+            </main>
 
-    <footer>
-        <hr>
-        <p>&copy; 2026 Karelin's log</p>
+            <aside class="sidebar">
+                <h3>RSS</h3>
+                <p>здесь будет RSS-лента</p>
+            </aside>
+        </div>
+    </section>
+
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Karelin's log</p>
+        </div>
     </footer>
 </body>
+
 </html>
