@@ -1,76 +1,109 @@
-/* Общие стили */
-* {
+:root {
+    --font-family: sans-serif;
+}
+
+html {
     box-sizing: border-box;
+    line-height: 1.15;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
 }
 
 body {
-    font-family: sans-serif;
     margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    background-color: #f9f9f9;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Шапка */
-.header {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
     background-color: #fff;
-    padding: 15px 0;
-    border-bottom: 1px solid #ddd;
 }
 
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.navbar ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 20px;
-}
-
-.navbar a {
-    text-decoration: none;
-    color: #333;
-}
-
-.navbar a:hover {
+a {
     color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
 }
 
-/* Основная часть + сайдбар */
-.main-layout {
+a:hover {
+    color: #0056b3;
+}
+
+li {
+    list-style-type: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+button,
+input {
+    padding: 0;
+    margin: 0;
+}
+
+/* Каркас: две колонки */
+.page-wrapper {
     display: flex;
+    min-height: 100vh;
+}
+
+/* Левая колонка */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    width: 280px;
+    background-color: #ffffff;
+    padding: 30px;
+    border-right: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+}
+
+/* Верхняя группа (лого + меню) */
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
     gap: 30px;
-    margin: 30px 0;
 }
 
-.content {
-    flex: 3;
-}
-
-.sidebar {
-    flex: 1;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Футер */
-.footer {
-    background-color: #fff;
-    padding: 20px 0;
+.logo {
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 30px;
+    max-height: 60px;
     text-align: center;
-    border-top: 1px solid #ddd;
-    margin-top: 40px;
+}
+
+/* Нижняя группа (system + копирайт) */
+.sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.copyright {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 15px;
+    max-height: 30px;
+    text-align: center;
+}
+
+/* Правая колонка */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    background-color: #f4f5f7;
 }
