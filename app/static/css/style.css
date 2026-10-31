@@ -1,10 +1,38 @@
 :root {
     --font-family: sans-serif;
+    --font-family-Inter: 'Inter', sans-serif;
+    --font-family-Jim-Nightshade: 'Jim Nightshade', sans-serif;
+    --font-family-Splash: 'Splash', sans-serif;
+    --font-family-Kolker-Brush: 'Kolker Brush', sans-serif;
+
+    /* Шкала размеров (в rem) */
+    --text-xs: 0.75rem;
+    /* 12px */
+    --text-sm: 0.875rem;
+    /* 14px */
+    --text-base: 1rem;
+    /* 16px */
+    --text-lg: 1.125rem;
+    /* 18px */
+    --text-xl: 1.25rem;
+    /* 20px */
+    --text-2xl: 1.5rem;
+    /* 24px */
+    --text-3xl: 2rem;
+    /* 32px */
+
+    /* цвет */
+    --color-blue: #007bff;
+    --color-grey: #717172;
+    --color-red: #d10404;
+    --color-border: #e0e0e0;
+    --color-white: #ffffff;
+    --color-main: #f4f5f7;
 }
 
 html {
     box-sizing: border-box;
-    line-height: 1.15;
+    font-size: 16px;
 }
 
 *,
@@ -20,17 +48,17 @@ body {
     font-weight: 400;
     line-height: 1.5;
     text-align: left;
-    background-color: #fff;
+    background-color: var(--color-white);
 }
 
 a {
-    color: #007bff;
+    color: var(--color-blue);
     text-decoration: none;
     background-color: transparent;
 }
 
 a:hover {
-    color: #0056b3;
+    color: var(--color-red);
 }
 
 li {
@@ -48,7 +76,8 @@ ul,
 ol,
 li,
 button,
-input {
+input,
+form {
     padding: 0;
     margin: 0;
 }
@@ -66,9 +95,9 @@ input {
     justify-content: space-between;
     height: 100vh;
     width: 280px;
-    background-color: #ffffff;
+    background-color: var(--color-white);
     padding: 30px;
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid var(--color-border);
     position: sticky;
     top: 0;
 }
@@ -80,11 +109,59 @@ input {
     gap: 30px;
 }
 
-.logo {
-    border-bottom: 1px solid #e0e0e0;
+.sidebar-logo {
+    border-bottom: 1px solid var(--color-border);
     padding-bottom: 30px;
     max-height: 60px;
     text-align: center;
+    font-family: var(--font-family-Splash);
+    font-size: var(--text-3xl);
+    color: var(--color-red);
+}
+
+.sidebar-menu,
+.sidebar-auth {
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-xl);
+}
+
+.sidebar-auth {
+    padding-bottom: 20px;
+}
+
+.sidebar-link {
+    position: relative;
+    /* Нужно для позиционирования псевдоэлемента */
+    text-decoration: none;
+    color: var(--color-blue);
+    display: inline-block;
+    padding-bottom: 4px;
+    /* Отступ, чтобы подчеркивание не прилипало к тексту */
+}
+
+/* Создаем невидимую линию под ссылкой */
+.sidebar-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    /* Толщина линии */
+    background-color: var(--color-red);
+    /* Цвет линии */
+    transform: scaleX(0);
+    /* Линия сжата в точку (не видна) */
+    transform-origin: center;
+    /* Точка отсчета — центр */
+    transition: transform 0.3s ease;
+    /* Плавное появление */
+}
+
+/* При наведении линия растягивается от центра */
+.sidebar-link:hover::after {
+    transform: scaleX(1);
+    /* Линия растягивается на всю ширину */
 }
 
 /* Нижняя группа (system + копирайт) */
@@ -94,16 +171,87 @@ input {
     gap: 30px;
 }
 
+.sidebar-actions {}
+
+.subscribe-form {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.subscribe-form input {
+    flex: 1;
+    /* Поле ввода растягивается */
+    min-width: 0;
+    /* Чтобы input мог сжиматься */
+    padding: 10px 12px;
+    border: 1px solid var(--color-blue);
+    border-radius: 5px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.subscribe-form input::placeholder {
+    color: var(--color-grey);
+}
+
+.subscribe-form input:focus {
+    border-color: var(--color-red);
+    /* Синяя рамка при фокусе */
+}
+
+.btn-subscribe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    background-color: var(--color-blue);
+    /* Синий фон, как у ссылок */
+    color: var(--color-white);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-subscribe:hover {
+    background-color: var(--color-red);
+    /* Тёмно-синий при наведении */
+}
+
+.btn-subscribe i {
+    font-size: var(--text-base);
+    /* Размер иконки */
+}
+
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
 .copyright {
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--color-border);
     padding-top: 15px;
     max-height: 30px;
     text-align: center;
+    font-size: var(--text-xs);
+    color: var(--color-grey);
 }
 
 /* Правая колонка */
 .main-content {
     flex: 1;
     padding: 30px;
-    background-color: #f4f5f7;
+    background-color: var(--color-main);
 }

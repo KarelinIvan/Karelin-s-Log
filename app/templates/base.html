@@ -5,6 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Karelin's log{% endblock %}</title>
+
+    <!-- Подключение шрифта Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Splash&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kolker+Brush&family=Splash&display=swap" rel="stylesheet">
+
+    <!-- Подключение иконок fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Подключение стилей -->
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
@@ -14,27 +28,31 @@
         <aside class="sidebar-nav">
             <!-- Верхняя группа: логотип и навигация -->
             <div class="sidebar-top">
-                <div class="logo">
-                    Karelin's log
+                <div class="sidebar-logo">
+                    karelin's log
                 </div>
-                <nav class="navi">
+                <nav class="sidebar-menu">
                     <ul>
-                        <li><a href="/page/">Главная</a></li>
-                        <li><a href="#">Обо мне</a></li>
-                        <li><a href="#">Поиск</a></li>
+                        <li><a class="sidebar-link" href="/page/">Главная</a></li>
+                        <li><a class="sidebar-link" href="#">Обо мне</a></li>
+                        <li><a class="sidebar-link" href="#">Поиск</a></li>
                     </ul>
                 </nav>
             </div>
 
             <!-- Нижняя группа: системный блок + копирайт -->
             <div class="sidebar-bottom">
-                <div class="sistem">
-                    <div>
-                        <a href="#" class="auth">Войти</a>
+                <div class="sidebar-actions">
+                    <div class="sidebar-auth">
+                        <a href="#" class="sidebar-link">Войти</a>
                     </div>
-                    <div>
-                        <a href="#">Подписаться на рассылку</a>
-                    </div>
+                    <form class="subscribe-form" action="#" method="post">
+                        <label for="email" class="visually-hidden"></label>
+                        <input type="email" id="email" name="email" placeholder="Ваш email" required>
+                        <button type="submit" class="btn-subscribe" aria-label="Подписаться на рассылку">
+                            <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
+                        </button>
+                    </form>
                 </div>
                 <div class="copyright">
                     <p>&copy; 2026 Karelin's log</p>
