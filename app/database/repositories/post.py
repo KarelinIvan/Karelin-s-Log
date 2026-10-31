@@ -51,8 +51,8 @@ class PostRepository:
         Метод возвращает список постов с пагинацией.
 
         Args:
-            Skip: Сколько записей пропустить.
-            Limit: Сколько записей вернуть (по умолчанию 10).
+            skip (int): Сколько записей пропустить.
+            limit (int): Сколько записей вернуть (по умолчанию 10).
         """
         result = await self.session.exec(select(Post).offset(skip).limit(limit))
         return list(result.all())
