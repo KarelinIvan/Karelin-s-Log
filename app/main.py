@@ -4,7 +4,8 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 
-from app.controllers import post  # noqa: F401 — регистрирует эндпоинты
+from app.controllers import pages, post  # noqa: F401 — регистрирует эндпоинты
+from app.controllers.pages import router as pages_router
 from app.controllers.router import router as post_router
 
 # Путь к папке с шаблонами (относительно main.py)
@@ -23,7 +24,7 @@ app = FastAPI(lifespan=lifespan)
 
 # Подключение роутеров
 app.include_router(post_router)
-
+app.include_router(pages_router)
 
 if __name__ == "__main__":
     import uvicorn
