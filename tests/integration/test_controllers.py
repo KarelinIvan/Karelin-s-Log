@@ -1,3 +1,7 @@
+from app.database.repositories.post import PostRepository
+from app.schemas.post import PostCreate
+
+
 async def test_create_post(async_client, test_session):
     """Тест проверяет успешное создание поста через API"""
     response = await async_client.post(
@@ -82,6 +86,30 @@ async def test_get_posts(async_client, sample_post):
     data = response.json()
     assert len(data) == 1
     assert data[0]["id"] == sample_post.id
+
+
+async def test_get_posts_pagination(async_client, test_session):
+    """Тест проверяет пагинацию (skip и limit)"""
+    repo = PostRepository(test_session)
+    for i in range(3):
+        await repo.create(PostCreate(title=f"Пост {i}", description="Описание"))
+
+    # Проверяем limit=2 (должно вернуть 2 поста)
+    response = await async_client.get("/posts/?limit=2")
+    assert response.status_code == 200
+    assert len(response.json()) == 2
+
+    # Проверяем skip=1 (первый пост пропущен)
+    response = await async_client.get("/posts/?skip=1&limit=2")
+    assert response.status_code == 200
+    assert len(response.json()) == 2
+
+    data = response.json()
+    assert data[0]["title"] == "Пост 1"
+
+    # Проверяем защиту
+    response = await async_client.get("/posts/?limit=1000")
+    assert response.status_code == 422
 
 
 async def test_update_post(async_client, sample_post):
