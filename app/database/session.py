@@ -18,6 +18,8 @@ engine = create_async_engine(
 session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
+# Используется в тестах (tests/integration/test_db_tables.py)
+# для проверки создания таблиц. В проде схема управляется через Alembic.
 async def create_db_and_tables(db_engine):
     """
     Создаёт таблицы в базе данных на основании моделей,
