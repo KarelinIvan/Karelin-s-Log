@@ -46,9 +46,15 @@ class PostRepository:
         result = await self.session.exec(select(Post).where(Post.id == post_id))
         return result.first()
 
-    async def get_all(self) -> list[Post]:
-        """Метод возвращает все посты из базы данных."""
-        result = await self.session.exec(select(Post))
+    async def get_all(self, skip: int = 0, limit: int = 10) -> list[Post]:
+        """
+        Метод возвращает список постов с пагинацией.
+
+        Args:
+            Skip: Сколько записей пропустить.
+            Limit: Сколько записей вернуть (по умолчанию 10).
+        """
+        result = await self.session.exec(select(Post).offset(skip).limit(limit))
         return list(result.all())
 
     async def update(self, post: Post, data: dict) -> Post:
