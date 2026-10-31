@@ -4,6 +4,7 @@
     --font-family-Jim-Nightshade: 'Jim Nightshade', sans-serif;
     --font-family-Splash: 'Splash', sans-serif;
     --font-family-Kolker-Brush: 'Kolker Brush', sans-serif;
+    --font-family-Noto-serif: 'Noto Serif', serif;
 
     /* Шкала размеров (в rem) */
     --text-xs: 0.75rem;
@@ -23,11 +24,14 @@
 
     /* цвет */
     --color-blue: #007bff;
+    --color-dark-blue: #0056b3;
     --color-grey: #717172;
     --color-red: #d10404;
     --color-border: #e0e0e0;
     --color-white: #ffffff;
     --color-main: #f4f5f7;
+    --color-shadow: rgba(0, 0, 0, 0.05);
+    --color-black: #000000;
 }
 
 html {
@@ -52,14 +56,10 @@ body {
 }
 
 a {
-    color: var(--color-blue);
     text-decoration: none;
     background-color: transparent;
 }
 
-a:hover {
-    color: var(--color-red);
-}
 
 li {
     list-style-type: none;
@@ -82,10 +82,84 @@ form {
     margin: 0;
 }
 
-/* Каркас: две колонки */
+/* --- Универсальные стили для форм --- */
+.form-control {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.form-control::placeholder {
+    color: var(--color-grey);
+}
+
+.form-control:focus {
+    border-color: var(--color-blue);
+}
+
+.btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    background-color: var(--color-blue);
+    color: var(--color-white);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-dark-blue);
+}
+
+.btn-primary i {
+    font-size: var(--text-base);
+}
+
+/* Универсальная градиентная линия */
+.divider-top,
+.divider-bottom {
+    position: relative;
+}
+
+/* Линия сверху */
+.divider-top::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent 0%, var(--color-border) 50%, transparent 100%);
+}
+
+/* Линия снизу */
+.divider-bottom::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent 0%, var(--color-border) 50%, transparent 100%);
+}
+
+
+/* Каркас: три колонки */
 .page-wrapper {
     display: flex;
     min-height: 100vh;
+    background-color: var(--color-main);
+    /* Общий фон страницы */
 }
 
 /* Левая колонка */
@@ -94,10 +168,10 @@ form {
     flex-direction: column;
     justify-content: space-between;
     height: 100vh;
-    width: 280px;
+    width: 350px;
     background-color: var(--color-white);
     padding: 30px;
-    border-right: 1px solid var(--color-border);
+    box-shadow: 2px 0 10px var(--color-shadow);
     position: sticky;
     top: 0;
 }
@@ -110,13 +184,13 @@ form {
 }
 
 .sidebar-logo {
-    border-bottom: 1px solid var(--color-border);
     padding-bottom: 30px;
     max-height: 60px;
     text-align: center;
     font-family: var(--font-family-Splash);
     font-size: var(--text-3xl);
     color: var(--color-red);
+    position: relative;
 }
 
 .sidebar-menu,
@@ -126,14 +200,15 @@ form {
 }
 
 .sidebar-auth {
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .sidebar-link {
     position: relative;
     /* Нужно для позиционирования псевдоэлемента */
     text-decoration: none;
-    color: var(--color-blue);
+    color: var(--color-black);
     display: inline-block;
     padding-bottom: 4px;
     /* Отступ, чтобы подчеркивание не прилипало к тексту */
@@ -148,7 +223,7 @@ form {
     width: 100%;
     height: 2px;
     /* Толщина линии */
-    background-color: var(--color-red);
+    background-color: var(--color-blue);
     /* Цвет линии */
     transform: scaleX(0);
     /* Линия сжата в точку (не видна) */
@@ -156,6 +231,10 @@ form {
     /* Точка отсчета — центр */
     transition: transform 0.3s ease;
     /* Плавное появление */
+}
+
+.sidebar-link:hover {
+    color: var(--color-blue);
 }
 
 /* При наведении линия растягивается от центра */
@@ -180,55 +259,6 @@ form {
     align-items: stretch;
 }
 
-.subscribe-form input {
-    flex: 1;
-    /* Поле ввода растягивается */
-    min-width: 0;
-    /* Чтобы input мог сжиматься */
-    padding: 10px 12px;
-    border: 1px solid var(--color-blue);
-    border-radius: 5px;
-    font-family: var(--font-family-Inter);
-    font-size: var(--text-sm);
-
-    outline: none;
-    transition: border-color 0.2s ease;
-}
-
-.subscribe-form input::placeholder {
-    color: var(--color-grey);
-}
-
-.subscribe-form input:focus {
-    border-color: var(--color-red);
-    /* Синяя рамка при фокусе */
-}
-
-.btn-subscribe {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 12px;
-    background-color: var(--color-blue);
-    /* Синий фон, как у ссылок */
-    color: var(--color-white);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.btn-subscribe:hover {
-    background-color: var(--color-red);
-    /* Тёмно-синий при наведении */
-}
-
-.btn-subscribe i {
-    font-size: var(--text-base);
-    /* Размер иконки */
-}
-
-
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -241,17 +271,131 @@ form {
 }
 
 .copyright {
-    border-top: 1px solid var(--color-border);
     padding-top: 15px;
     max-height: 30px;
     text-align: center;
     font-size: var(--text-xs);
     color: var(--color-grey);
+    position: relative;
 }
 
-/* Правая колонка */
+/* Центральная колонка */
 .main-content {
     flex: 1;
     padding: 30px;
     background-color: var(--color-main);
+}
+
+.post-card {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+    margin-bottom: 30px;
+    /* Отступ между карточками */
+
+    /* Легкая тень */
+    background-color: var(--color-white);
+    /* Белый фон, чтобы тень выделялась */
+    border-radius: 8px;
+    /* Скруглённые углы */
+    box-shadow: 0 2px 10px var(--color-shadow);
+    /* Мягкая тень */
+}
+
+.post-card__content {
+    flex: 1;
+    position: relative;
+    /* Нужно для позиционирования псевдоэлемента */
+    padding-left: 30px;
+    /* Отступ для текста */
+}
+
+/* Создаем черту с градиентом */
+.post-card__content::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    /* Толщина черты в самом широком месте (в середине) */
+
+    /*
+       Градиент сверху вниз:
+       - сверху: прозрачный
+       - в середине: плотный цвет (тень)
+       - снизу: прозрачный
+    */
+    background: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(0, 0, 0, 0.1) 50%,
+            /* ← Здесь задается цвет и "плотность" тени */
+            transparent 100%);
+}
+
+.post-card__title {
+    font-family: var(--font-family-Noto-serif);
+    font-style: italic;
+    color: var(--color-black);
+    padding-bottom: 10px;
+}
+
+.post-card__meta {
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: var(--color-grey);
+    padding-bottom: 10px;
+}
+
+.post-card__description {
+    font-family: var(--font-family-Inter);
+    color: var(--color-grey);
+    padding-bottom: 15px;
+}
+
+.post-card__link {
+    color: var(--color-blue);
+    font-family: var(--font-family-Inter);
+}
+
+/* Правая колонка */
+.sidebar-right {
+    width: 350px;
+    /* Фиксированная ширина, как у левой */
+    background-color: var(--color-white);
+    padding: 30px;
+    flex-shrink: 0;
+    /* Запрещаем сжиматься */
+    box-shadow: -2px 0 10px var(--color-shadow);
+}
+
+.widget-title {
+    padding: 20px 0;
+    color: var(--color-black);
+}
+
+/* Форма поиска справа */
+.search-form {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+/* Список категорий */
+.category-list li {
+    position: relative;
+    /* Нужно для позиционирования линии */
+}
+
+.category-list a {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    color: var(--color-grey);
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+}
+
+.category-list span {
+    color: var(--color-grey);
 }

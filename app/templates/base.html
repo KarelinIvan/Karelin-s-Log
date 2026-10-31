@@ -15,6 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Splash&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kolker+Brush&family=Splash&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
     <!-- Подключение иконок fontawesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -28,7 +30,7 @@
         <aside class="sidebar-nav">
             <!-- Верхняя группа: логотип и навигация -->
             <div class="sidebar-top">
-                <div class="sidebar-logo">
+                <div class="sidebar-logo divider-bottom">
                     karelin's log
                 </div>
                 <nav class="sidebar-menu">
@@ -43,30 +45,56 @@
             <!-- Нижняя группа: системный блок + копирайт -->
             <div class="sidebar-bottom">
                 <div class="sidebar-actions">
-                    <div class="sidebar-auth">
+                    <div class="sidebar-auth divider-top">
                         <a href="#" class="sidebar-link">Войти</a>
                     </div>
+                    <h3 class="widget-title divider-top">Подписаться на рассылку</h3>
                     <form class="subscribe-form" action="#" method="post">
-                        <label for="email" class="visually-hidden"></label>
-                        <input type="email" id="email" name="email" placeholder="Ваш email" required>
-                        <button type="submit" class="btn-subscribe" aria-label="Подписаться на рассылку">
+                        <label for="email" class="visually-hidden">Подписка на рассылку</label>
+                        <input type="email" id="email" name="email" placeholder="Введите e-mail" class="form-control"
+                            required>
+                        <button type="submit" class="btn-primary" aria-label="Подписаться на рассылку">
                             <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
                         </button>
                     </form>
                 </div>
-                <div class="copyright">
+                <div class="copyright divider-top">
                     <p>&copy; 2026 Karelin's log</p>
                 </div>
             </div>
         </aside>
 
-        <!-- Правая колонка -->
+        <!-- Центральная колонка -->
         <div class="main-content">
             <main>
                 {% block content %}
                 {% endblock %}
             </main>
         </div>
+
+        <!-- Правая колонка (Сайдбар) -->
+        <aside class="sidebar-right">
+            <div class="widget">
+                <h3 class="widget-title">Поиск</h3>
+                <form action="#" class="search-form" method="get">
+                    <input type="text" placeholder="Введите ключевое слово..." class="form-control">
+                    <button class="btn-primary" type="submit" aria-label="Поиск">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="widget">
+                <h3 class="widget-title">Категории</h3>
+                <ul class="category-list">
+                    <li class="divider-bottom"><a href="#">В разработке <span>(0)</span></a></li>
+                    <li class="divider-bottom"><a href="#">В разработке <span>(0)</span></a></li>
+                    <li class="divider-bottom"><a href="#">В разработке <span>(0)</span></a></li>
+                </ul>
+            </div>
+
+            <!-- Сюда можно добавить блок "Популярные статьи" -->
+        </aside>
     </div>
 </body>
 

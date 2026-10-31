@@ -8,9 +8,27 @@
 {% if posts %}
 <ul>
     {% for post in posts %}
-    <li>
-        <a href="/page/posts/{{ post.id }}">{{ post.title }}</a>
-    </li>
+    <article class="post-card">
+        <!-- Левая часть: картинка/иконка -->
+        <div class="post-card__image">
+            <!-- Пока картинки нет, использую иконку Font Awesome -->
+            <i class="fa-regular fa-newspaper"></i>
+        </div>
+
+        <!-- Правая часть: контент -->
+        <div class="post-card__content">
+            <h2 class="post-card__title">{{ post.title }}</h2>
+
+            <div class="post-card__meta">
+                <span><i class="fa-regular fa-calendar"></i> {{ post.created_at.strftime('%d %B %Y') }}</span>
+                <!-- Можно добавить категорию -->
+            </div>
+
+            <p class="post-card__description">{{ post.description | truncate(250, True)}}</p>
+
+            <a href="/page/posts/{{ post.id }}" class="post-card__link">Подробнее...</a>
+        </div>
+    </article>
     {% endfor %}
 </ul>
 {% else %}
