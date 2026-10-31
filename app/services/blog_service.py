@@ -51,9 +51,15 @@ class BlogService:
             raise PostNotFoundError(f"Пост с id: {post_id} не найден")
         return post
 
-    async def get_posts(self) -> list[Post]:
-        """Возвращает все посты из базы данных"""
-        return await self.repo.get_all()
+    async def get_posts(self, skip: int = 0, limit: int = 10) -> list[Post]:
+        """
+        Возвращает список постов с пагинацией.
+
+        Args:
+            skip (int): Сколько постов пропустить.
+            limit (int): Сколько постов вернуть.
+        """
+        return await self.repo.get_all(skip=skip, limit=limit)
 
     async def update_post(self, post_id: int, data: PostUpdate) -> Post:
         """
