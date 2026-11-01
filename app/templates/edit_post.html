@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<article class="post-edit">
+    <h1 class="post-edit__title divider-bottom">Редактирование</h1>
+
+    <form class="edit-form" action="/page/posts/{{ post.id }}/edit" method="post">
+        <div class="form-group">
+            <label for="title">Заголовок</label>
+            <input type="text" id="title" name="title" value="{{ post.title }}" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea id="description" name="description" class="form-control"
+                rows="30">{{ post.description }}</textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <label>
+                <input type="checkbox" name="published" {% if post.published %}checked{% endif %}>
+                Опубликовать
+            </label>
+        </div>
+
+        <div class="edit-form__management">
+            <button class="btn-primary" type="submit">Сохранить</button>
+            <a href="/page/posts/{{ post.id }}" class="btn-secondary" style="text-decoration: none;">Отмена</a>
+        </div>
+    </form>
+</article>
+
+{% endblock %}

@@ -14,7 +14,13 @@
             </span>
         </p>
     </div>
+    <div class="post-detail__back divider-top">
+        <a href="/page/" class="post-detail__back-link">Вернуться на главную</a>
+    </div>
 
-    <a href="/page/" class="post-detail__back-link">Вернуться на главную</a>
+    <div class="post-detail__management divider-top">
+        <a href="/page/posts/{{ post.id }}/edit" class="btn-primary">Редактировать</a>
+        <a href="#" class="btn-secondary">Удалить</a>
+    </div>
 </article>
 {% endblock %}
