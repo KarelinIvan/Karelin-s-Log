@@ -1,5 +1,4 @@
 :root {
-    --font-family: sans-serif;
     --font-family-Inter: 'Inter', sans-serif;
     --font-family-Jim-Nightshade: 'Jim Nightshade', sans-serif;
     --font-family-Splash: 'Splash', sans-serif;
@@ -47,7 +46,7 @@ html {
 
 body {
     margin: 0;
-    font-family: var(--font-family);
+    font-family: var(--font-family-Inter);
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -82,7 +81,7 @@ form {
     margin: 0;
 }
 
-/* --- Универсальные стили для форм --- */
+/* Универсальные стили для форм */
 .form-control {
     flex: 1;
     min-width: 0;
@@ -159,7 +158,6 @@ form {
     display: flex;
     min-height: 100vh;
     background-color: var(--color-main);
-    /* Общий фон страницы */
 }
 
 /* Левая колонка */
@@ -176,7 +174,6 @@ form {
     top: 0;
 }
 
-/* Верхняя группа (лого + меню) */
 .sidebar-top {
     display: flex;
     flex-direction: column;
@@ -206,15 +203,12 @@ form {
 
 .sidebar-link {
     position: relative;
-    /* Нужно для позиционирования псевдоэлемента */
     text-decoration: none;
     color: var(--color-black);
     display: inline-block;
     padding-bottom: 4px;
-    /* Отступ, чтобы подчеркивание не прилипало к тексту */
 }
 
-/* Создаем невидимую линию под ссылкой */
 .sidebar-link::after {
     content: '';
     position: absolute;
@@ -222,28 +216,20 @@ form {
     bottom: 0;
     width: 100%;
     height: 2px;
-    /* Толщина линии */
     background-color: var(--color-blue);
-    /* Цвет линии */
     transform: scaleX(0);
-    /* Линия сжата в точку (не видна) */
     transform-origin: center;
-    /* Точка отсчета — центр */
     transition: transform 0.3s ease;
-    /* Плавное появление */
 }
 
 .sidebar-link:hover {
     color: var(--color-blue);
 }
 
-/* При наведении линия растягивается от центра */
 .sidebar-link:hover::after {
     transform: scaleX(1);
-    /* Линия растягивается на всю ширину */
 }
 
-/* Нижняя группа (system + копирайт) */
 .sidebar-bottom {
     display: flex;
     flex-direction: column;
@@ -272,7 +258,6 @@ form {
 
 .copyright {
     padding-top: 15px;
-    max-height: 30px;
     text-align: center;
     font-size: var(--text-xs);
     color: var(--color-grey);
@@ -291,26 +276,17 @@ form {
     gap: 30px;
     padding: 30px;
     margin-bottom: 30px;
-    /* Отступ между карточками */
-
-    /* Легкая тень */
     background-color: var(--color-white);
-    /* Белый фон, чтобы тень выделялась */
     border-radius: 8px;
-    /* Скруглённые углы */
     box-shadow: 0 2px 10px var(--color-shadow);
-    /* Мягкая тень */
 }
 
 .post-card__content {
     flex: 1;
     position: relative;
-    /* Нужно для позиционирования псевдоэлемента */
     padding-left: 30px;
-    /* Отступ для текста */
 }
 
-/* Создаем черту с градиентом */
 .post-card__content::before {
     content: '';
     position: absolute;
@@ -318,18 +294,9 @@ form {
     top: 0;
     bottom: 0;
     width: 2px;
-    /* Толщина черты в самом широком месте (в середине) */
-
-    /*
-       Градиент сверху вниз:
-       - сверху: прозрачный
-       - в середине: плотный цвет (тень)
-       - снизу: прозрачный
-    */
     background: linear-gradient(to bottom,
             transparent 0%,
             rgba(0, 0, 0, 0.1) 50%,
-            /* ← Здесь задается цвет и "плотность" тени */
             transparent 100%);
 }
 
@@ -351,43 +318,44 @@ form {
     font-family: var(--font-family-Inter);
     color: var(--color-grey);
     padding-bottom: 15px;
+    text-align: justify;
 }
 
 .post-card__link {
-    color: var(--color-blue);
+    color: var(--color-grey);
     font-family: var(--font-family-Inter);
+}
+
+.post-card__link:hover {
+    color: var(--color-blue);
 }
 
 /* Правая колонка */
 .sidebar-right {
     width: 350px;
-    /* Фиксированная ширина, как у левой */
     background-color: var(--color-white);
     padding: 30px;
     flex-shrink: 0;
-    /* Запрещаем сжиматься */
     box-shadow: -2px 0 10px var(--color-shadow);
 }
 
 .widget-title {
     padding: 20px 0;
-    color: var(--color-black);
+    color: var(--color-blue);
+    font-size: var(--text-sm);
 }
 
-/* Форма поиска справа */
 .search-form {
     display: flex;
     gap: 10px;
     align-items: stretch;
 }
 
-/* Список категорий */
 .category-list li {
     position: relative;
-    /* Нужно для позиционирования линии */
 }
 
-.category-list a {
+.category-list__link {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
@@ -396,6 +364,44 @@ form {
     font-size: var(--text-sm);
 }
 
+.category-list__link:hover {
+    color: var(--color-blue);
+}
+
 .category-list span {
+    color: var(--color-grey);
+}
+
+/* Страница детальной информации */
+.post-detail {}
+
+.post-detail__title {
+    font-family: var(--font-family-Noto-serif);
+    font-style: italic;
+    padding-bottom: 20px;
+}
+
+.post-detail__description {
+    font-family: var(--font-family-Inter);
+    padding-bottom: 20px;
+    text-align: justify;
+}
+
+.post-detail__meta {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.post-detail__back-link {
+    color: var(--color-grey);
+}
+
+.post-detail__back-link:hover {
+    color: var(--color-blue);
+}
+
+.post-detail__date {
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-xs);
     color: var(--color-grey);
 }
