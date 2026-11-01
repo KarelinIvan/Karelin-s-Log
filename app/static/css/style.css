@@ -1,8 +1,6 @@
 :root {
     --font-family-Inter: 'Inter', sans-serif;
-    --font-family-Jim-Nightshade: 'Jim Nightshade', sans-serif;
     --font-family-Splash: 'Splash', sans-serif;
-    --font-family-Kolker-Brush: 'Kolker Brush', sans-serif;
     --font-family-Noto-serif: 'Noto Serif', serif;
 
     /* Шкала размеров (в rem) */
@@ -90,7 +88,7 @@ form {
     border-radius: 5px;
     font-family: var(--font-family-Inter);
     font-size: var(--text-sm);
-    color: #333;
+    color: var(--color-grey);
     outline: none;
     transition: border-color 0.2s ease;
 }
@@ -215,8 +213,11 @@ form {
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 2px;
-    background-color: var(--color-blue);
+    height: 1px;
+    background: linear-gradient(to right,
+            transparent 0%,
+            var(--color-blue) 50%,
+            transparent 100%);
     transform: scaleX(0);
     transform-origin: center;
     transition: transform 0.3s ease;
