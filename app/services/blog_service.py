@@ -103,7 +103,7 @@ class BlogService:
         """
         Возвращает общее количество постов.
 
-        Args:
+        Returns:
             int: Количество постов.
         """
         return await self.repo.count()
