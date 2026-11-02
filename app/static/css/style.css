@@ -108,6 +108,7 @@ form {
     justify-content: center;
     padding: 10px 12px;
     background-color: var(--color-blue);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     color: var(--color-white);
     border: none;
     border-radius: 5px;
@@ -174,6 +175,29 @@ form {
     bottom: 0;
     height: 1px;
     background: linear-gradient(to right, transparent 0%, var(--color-border) 50%, transparent 100%);
+}
+
+/* Пагинация */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding-top: 20px;
+}
+
+.pagination__info {
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: var(--color-grey);
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
 }
 
 
@@ -298,6 +322,13 @@ form {
     background-color: var(--color-main);
 }
 
+.post-list {}
+
+.page-title {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+}
+
 .post-card {
     display: flex;
     gap: 30px;
@@ -356,6 +387,7 @@ form {
 .post-card__link:hover {
     color: var(--color-blue);
 }
+
 
 /* Правая колонка */
 .sidebar-right {
