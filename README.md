@@ -36,9 +36,9 @@ app/
 ├── schemas/                # Pydantic-схемы (валидация запросов и ответов API)
 ├── services/               # Бизнес-логика: правила и проверки (title и т.д.)
 ├── templates/              # HTML-шаблоны Jinja2
-│   └── admin/              # Шаблоны админ-панели (dashboard, create_post)
+│   └── admin/              # Шаблоны админ-панели
 ├── static/                 # Статические файлы
-│   └── css/                # Стили (style.css)
+│   └── css/                # Стили
 └── main.py                 # Точка входа: сборка FastAPI-приложения
 tests/
 ├── integration/            # Интеграционные тесты (HTTP, БД, репозитории, сервисы)
