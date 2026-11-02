@@ -1,4 +1,4 @@
-from sqlmodel import select
+from sqlmodel import func, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Post
@@ -88,3 +88,14 @@ class PostRepository:
         """
         await self.session.delete(post)
         await self.session.commit()
+
+    async def count(self) -> int:
+        """
+        Метод возвращает общее количество постов в базе данных.
+
+        Returns:
+            int: Количество постов в базе данных.
+        """
+
+        result = await self.session.exec(select(func.count()).select_from(Post))
+        return result.one()
