@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Query, status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.controllers import post  # noqa: F401, PLW0406
@@ -48,13 +48,15 @@ async def get_post(
 
 @router.get("/", response_model=list[PostRead])
 async def get_posts(
+    skip: int = Query(0, ge=0, description="Сколько записей пропустить"),
+    limit: int = Query(10, ge=1, le=100, description="Сколько вернуть (макс.100)"),
     session: AsyncSession = Depends(get_session),
 ) -> list[PostRead]:
     """Возвращает список всех постов"""
     repo = PostRepository(session)
     service = BlogService(repo)
 
-    posts = await service.get_posts()
+    posts = await service.get_posts(skip=skip, limit=limit)
     return posts  # type: ignore
 
 

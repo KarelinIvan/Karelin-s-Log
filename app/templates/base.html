@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Karelin's log{% endblock %}</title>
+
+    <!-- Подключение шрифта Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Splash&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <!-- Подключение иконок fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Подключение стилей -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- Левая колонка -->
+        <aside class="sidebar-nav">
+            <!-- Верхняя группа: логотип и навигация -->
+            <div class="sidebar-top">
+                <div class="sidebar-logo divider-bottom">
+                    karelin's log
+                </div>
+                <nav class="sidebar-menu">
+                    <ul>
+                        <li><a class="sidebar-link" href="/page/">Главная</a></li>
+                        <li><a class="sidebar-link" href="#">Обо мне</a></li>
+                        <li><a class="sidebar-link" href="#">Контакты</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Нижняя группа: системный блок + копирайт -->
+            <div class="sidebar-bottom">
+                <div class="sidebar-actions">
+                    <div class="sidebar-auth divider-top">
+                        <a href="#" class="sidebar-link">Войти</a>
+                    </div>
+                    <h3 class="widget-title divider-top">Подписаться на рассылку</h3>
+                    <form class="subscribe-form" action="#" method="post">
+                        <label for="email" class="visually-hidden">Подписка на рассылку</label>
+                        <input type="email" id="email" name="email" placeholder="Введите e-mail" class="form-control"
+                            required>
+                        <button type="submit" class="btn-primary" aria-label="Подписаться на рассылку">
+                            <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="copyright divider-top">
+                    <p>&copy; 2026 Karelin's log</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Центральная колонка -->
+        <div class="main-content">
+            <main>
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+
+        <!-- Правая колонка (Сайдбар) -->
+        <aside class="sidebar-right">
+            <div class="widget">
+                <h3 class="widget-title">Поиск</h3>
+                <form action="#" class="search-form" method="get">
+                    <input type="text" placeholder="Введите ключевое слово..." class="form-control">
+                    <button class="btn-primary" type="submit" aria-label="Поиск">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="widget">
+                <h3 class="widget-title">Категории</h3>
+                <ul class="category-list">
+                    <li class="divider-bottom"><a class="category-list__link" href="#">В разработке <span>(0)</span></a>
+                    </li>
+                    <li class="divider-bottom"><a class="category-list__link" href="#">В разработке <span>(0)</span></a>
+                    </li>
+                    <li class="divider-bottom"><a class="category-list__link" href="#">В разработке <span>(0)</span></a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Сюда можно добавить блок "Популярные статьи" -->
+        </aside>
+    </div>
+</body>
+
+</html>
