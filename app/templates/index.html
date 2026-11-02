@@ -24,7 +24,9 @@
                 <!-- Можно добавить категорию -->
             </div>
 
-            <p class="post-card__description">{{ post.description | truncate(250, True)}}</p>
+            <p class="post-card__description">
+                {{ post.description | replace('\n', '<br>') | safe | truncate(250, True)}}
+            </p>
 
             <a href="/page/posts/{{ post.id }}" class="post-card__link">Подробнее...</a>
         </div>
