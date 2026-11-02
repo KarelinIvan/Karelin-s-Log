@@ -1,15 +1,14 @@
-from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi import Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app.controllers.router import pages_router as router
 from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostUpdate
 from app.services.blog_service import BlogService
 from app.services.exceptions import PostNotFoundError
-
-router = APIRouter(prefix="/page", tags=["pages"])
 
 
 @router.get("/", response_class=HTMLResponse)
