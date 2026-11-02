@@ -20,7 +20,12 @@
 
     <div class="post-detail__management divider-top">
         <a href="/page/posts/{{ post.id }}/edit" class="btn-primary">Редактировать</a>
-        <a href="#" class="btn-secondary">Удалить</a>
+        <form action="/page/posts/{{ post.id }}/delete" method="post">
+            <button type="submit" class="btn-secondary"
+                onclick="return confirm('Вы уверены, что хотите удалить этот пост?');">
+                Удалить
+            </button>
+        </form>
     </div>
 </article>
 {% endblock %}
