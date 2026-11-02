@@ -98,3 +98,7 @@ class BlogService:
             raise PostNotFoundError(f"Пост с id: {post_id} не найден")
 
         await self.repo.delete(post)
+
+    async def count_posts(self) -> int:
+        """Возвращает общее количество постов."""
+        return await self.repo.count()
