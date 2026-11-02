@@ -11,3 +11,6 @@ router = APIRouter(
 
 # HTML-роутер
 pages_router = APIRouter(prefix="/page", tags=["pages"])
+
+# Admin-роутер
+admin_router = APIRouter(prefix="/admin", tags=["admin"])
