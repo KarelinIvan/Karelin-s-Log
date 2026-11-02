@@ -83,3 +83,18 @@ async def edit_post_action(
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
     return RedirectResponse(url=f"/page/posts/{post_id}", status_code=303)
+
+
+@router.post("/posts/{post_id}/delete")
+async def delete_post_action(
+    post_id: int, session: AsyncSession = Depends(get_session)
+):
+    """Удаляет пост и перенаправляет на главную страницу."""
+    repo = PostRepository(session)
+    service = BlogService(repo)
+
+    try:
+        await service.delete_post(post_id)
+    except PostNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
+    return RedirectResponse(url="/page/", status_code=303)
