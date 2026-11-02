@@ -13,3 +13,9 @@ async def admin_index(request: Request):
         name="admin/dashboard.html",
         context={"message": "Админка работает!"},
     )
+
+
+@router.get("/posts/create", response_class=HTMLResponse)
+async def create_post_page(request: Request):
+    """Страница создания нового поста."""
+    return templates.TemplateResponse(request=request, name="admin/create_post.html")
