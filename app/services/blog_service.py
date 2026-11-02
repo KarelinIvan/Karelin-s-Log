@@ -100,5 +100,10 @@ class BlogService:
         await self.repo.delete(post)
 
     async def count_posts(self) -> int:
-        """Возвращает общее количество постов."""
+        """
+        Возвращает общее количество постов.
+
+        Args:
+            int: Количество постов.
+        """
         return await self.repo.count()
