@@ -12,15 +12,30 @@ from app.services.exceptions import PostNotFoundError
 
 
 @router.get("/", response_class=HTMLResponse)
-async def index(request: Request, session: AsyncSession = Depends(get_session)):
-    """Главная страница со списком постов."""
+async def index(
+    request: Request, page: int = 1, session: AsyncSession = Depends(get_session)
+):
+    """
+    Главная страница со списком постов.
+    Реализована постраничная пагинация (10 постов).
+    """
     repo = PostRepository(session)
     service = BlogService(repo)
 
-    posts = await service.get_posts(limit=10)
+    limit = 10
+    # расчёт смещения
+    skip = (page - 1) * limit
+
+    posts = await service.get_posts(skip=skip, limit=limit)
+    total_posts = await service.count_posts()
+
+    # Расчитываем общее количество страниц (округляем вверх)
+    total_pages = (total_posts + limit - 1) // limit
 
     return templates.TemplateResponse(
-        request=request, name="index.html", context={"posts": posts}
+        request=request,
+        name="index.html",
+        context={"posts": posts, "page": page, "total_pages": total_pages},
     )
 
 
