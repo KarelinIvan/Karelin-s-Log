@@ -1,4 +1,4 @@
-from sqlmodel import func, select
+from sqlmodel import col, func, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Post
@@ -48,13 +48,20 @@ class PostRepository:
 
     async def get_all(self, skip: int = 0, limit: int = 10) -> list[Post]:
         """
-        Метод возвращает список постов с пагинацией.
+        Метод возвращает список постов с пагинацией и сортирует его по дате публикации.
+        Отображает только опубликованные посты.
 
         Args:
             skip (int): Сколько записей пропустить.
             limit (int): Сколько записей вернуть (по умолчанию 10).
         """
-        result = await self.session.exec(select(Post).offset(skip).limit(limit))
+        result = await self.session.exec(
+            select(Post)
+            .where(Post.published == True)
+            .order_by(col(Post.published_at).desc())
+            .offset(skip)
+            .limit(limit)
+        )
         return list(result.all())
 
     async def update(self, post: Post, data: dict) -> Post:
