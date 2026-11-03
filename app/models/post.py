@@ -22,6 +22,8 @@ class Post(PostBase, table=True):
             происходит автоматически благодаря параметру
             `onupdate="CURRENT_TIMESTAMP"`. Это поле также имеет клиентский
             дефолт для корректной работы ORM.
+        published_at (datetime): Дата публикации, по умолчанию None.
+            Дата устанавливается при публикации поста.
     """
 
     # явно задаем название таблицы в бд
@@ -41,4 +43,9 @@ class Post(PostBase, table=True):
             "onupdate": func.now(),
         },
         description="Дата изменения",
+    )
+    published_at: datetime | None = Field(
+        default=None,
+        nullable=True,
+        description="Дата публикации",
     )
