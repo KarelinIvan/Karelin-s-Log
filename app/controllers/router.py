@@ -18,5 +18,5 @@ pages_router = APIRouter(
 admin_router = APIRouter(
     prefix="/admin",
     tags=["admin"],
-    dependencies=[Depends(verify_admin), Depends(log_request)],
+    dependencies=[Depends(log_request), Depends(verify_admin)],
 )
