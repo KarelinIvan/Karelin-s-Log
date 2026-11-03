@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     DEBUG_SQLALCHEMY: bool
     APP_PORT: int
 
+    # Хеш
+    ADMIN_PASSWORD_HASH: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,
