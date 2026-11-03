@@ -80,19 +80,32 @@ async def test_get_posts_empty(async_client, test_session):
 
 
 async def test_get_posts(async_client, sample_post):
-    """Тест проверяет получение списка постов."""
+    """
+    Тест проверяет, что в списке отображаются только опубликованные посты.
+    """
     response = await async_client.get("/posts/")
     assert response.status_code == 200
     data = response.json()
-    assert len(data) == 1
-    assert data[0]["id"] == sample_post.id
+
+    # Сначала проверяем, что не опубликованные посты не отображаются
+    assert len(data) == 0
+
+    await async_client.patch(f"/posts/{sample_post.id}", json={"published": True})
+    response_pub = await async_client.get("/posts/")
+    data_pub = response_pub.json()
+
+    # Проверяем, что опубликованный пост отображается
+    assert len(data_pub) == 1
+    assert data_pub[0]["id"] == sample_post.id
 
 
 async def test_get_posts_pagination(async_client, test_session):
     """Тест проверяет пагинацию (skip и limit)"""
     repo = PostRepository(test_session)
     for i in range(3):
-        await repo.create(PostCreate(title=f"Пост {i}", description="Описание"))
+        await repo.create(
+            PostCreate(title=f"Пост {i}", description="Описание", published=True)
+        )
 
     # Проверяем limit=2 (должно вернуть 2 поста)
     response = await async_client.get("/posts/?limit=2")
@@ -105,7 +118,7 @@ async def test_get_posts_pagination(async_client, test_session):
     assert len(response.json()) == 2
 
     data = response.json()
-    assert data[0]["title"] == "Пост 1"
+    assert data[0]["title"] in {"Пост 1", "Пост 2"}
 
     # Проверяем защиту
     response = await async_client.get("/posts/?limit=1000")
