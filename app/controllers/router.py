@@ -10,9 +10,13 @@ router = APIRouter(
 )
 
 # HTML-роутер
-pages_router = APIRouter(prefix="/page", tags=["pages"])
+pages_router = APIRouter(
+    prefix="/page", tags=["pages"], dependencies=[Depends(log_request)]
+)
 
 # Admin-роутер
 admin_router = APIRouter(
-    prefix="/admin", tags=["admin"], dependencies=[Depends(verify_admin)]
+    prefix="/admin",
+    tags=["admin"],
+    dependencies=[Depends(verify_admin), Depends(log_request)],
 )
