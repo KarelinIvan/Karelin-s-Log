@@ -2,6 +2,7 @@ import asyncio
 from logging.config import fileConfig
 
 from alembic import context
+from sqlalchemy import NullPool, create_engine
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import SQLModel
 
@@ -49,21 +50,27 @@ def do_run_migrations(connection) -> None:
         context.run_migrations()
 
 
-async def run_async_migrations() -> None:
-    """Асинхронный запуск миграций."""
-    # Создаём асинхронный движок, используя URL из настроек
-    connectable = create_async_engine(settings.DATABASE_URL)
-
-    async with connectable.connect() as connection:
-        # run_sync используется для моста между async и sync API Alembic
-        await connection.run_sync(do_run_migrations)
-
-    await connectable.dispose()
-
-
 def run_migrations_online() -> None:
-    """Запуск миграций в 'online' режиме (с подключением к БД)."""
-    asyncio.run(run_async_migrations())
+    """Запуск миграций в online режиме (асинхронно или синхронно)."""
+    url = context.config.get_main_option("sqlalchemy.url")
+
+    if url is None:
+        url = settings.DATABASE_URL
+
+    # Если URL синхронный (например, для тестов)
+    if not url.startswith("postgresql+asyncpg://"):
+        connectable = create_engine(url, poolclass=NullPool)
+        with connectable.connect() as connection:
+            do_run_migrations(connection)
+    else:
+        # Асинхронный режим (для продакшена)
+        async def run_async():
+            connectable = create_async_engine(url)
+            async with connectable.connect() as connection:
+                await connection.run_sync(do_run_migrations)
+            await connectable.dispose()
+
+        asyncio.run(run_async())
 
 
 if context.is_offline_mode():

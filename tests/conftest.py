@@ -2,9 +2,11 @@ import os
 from pathlib import Path
 
 import pytest
+from alembic import command
+from alembic.config import Config
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlmodel import SQLModel, delete
+from sqlmodel import delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Post
@@ -33,9 +35,6 @@ async def test_engine():
     # создаем тестовый движок
     engine = create_async_engine(url)
 
-    async with engine.begin() as connect:
-        await connect.run_sync(SQLModel.metadata.create_all)
-
     yield engine
     await engine.dispose()
 
@@ -58,3 +57,23 @@ async def test_session(test_engine):
         await session.exec(delete(Post))
         await session.commit()
         yield session
+
+
+@pytest.fixture(scope="session", autouse=True)
+def apply_migrations():
+    """Фикстура применяет миграции к тестовой базе данных синхронно."""
+    url = TEST_DATABASE_URL
+    if not url:
+        pytest.fail("TEST_DATABASE_URL не задан")
+    if "_test" not in url:
+        pytest.fail("URL не похож на тестовую базу данных")
+
+    # Меняем асинхронный драйвер на синхронный для Alembic
+    sync_url = url.replace("postgresql+asyncpg://", "postgresql://")
+
+    config = Config("alembic.ini")
+    config.set_main_option("sqlalchemy.url", sync_url)
+
+    # Применяем миграции синхронно
+    command.upgrade(config, "head")
+    yield
