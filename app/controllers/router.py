@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.controllers.dependencies import log_request
+from app.controllers.dependencies import log_request, verify_admin
 
 # API-роутер
 router = APIRouter(
@@ -13,4 +13,6 @@ router = APIRouter(
 pages_router = APIRouter(prefix="/page", tags=["pages"])
 
 # Admin-роутер
-admin_router = APIRouter(prefix="/admin", tags=["admin"])
+admin_router = APIRouter(
+    prefix="/admin", tags=["admin"], dependencies=[Depends(verify_admin)]
+)

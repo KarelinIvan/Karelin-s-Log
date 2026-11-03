@@ -14,7 +14,7 @@ async def log_request(request: Request):
     print(f"{request.method} {request.url.path}")
 
 
-async def verify_admin(credentials: HTTPBasicCredentials = Depends(HTTPBasic())):
+async def verify_admin(credentials: HTTPBasicCredentials = Depends(HTTPBasic())):  # noqa: B008
     """
     Проверяет логин и пароль администратора.
 
