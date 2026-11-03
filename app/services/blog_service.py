@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from app.database.repositories.post import PostRepository
 from app.models.post import Post
 from app.schemas.post import PostCreate, PostUpdate
@@ -78,6 +80,9 @@ class BlogService:
 
         # Превращает Pydantic-схему в словарь
         update_data = data.model_dump(exclude_unset=True)
+
+        if update_data.get("published") is True and post.published_at is None:
+            update_data["published_at"] = datetime.now(UTC)
 
         # Передаём в репозиторий
         return await self.repo.update(post, update_data)
