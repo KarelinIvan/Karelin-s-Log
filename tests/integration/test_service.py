@@ -1,7 +1,7 @@
 import pytest
 
 from app.database.repositories.post import PostRepository
-from app.schemas.post import PostCreate
+from app.schemas.post import PostCreate, PostUpdate
 from app.services.blog_service import BlogService
 from app.services.exceptions import (
     PostNotFoundError,
@@ -64,3 +64,20 @@ async def test_service_get_post_not_found(test_session):
 
     with pytest.raises(PostNotFoundError):
         await service.get_post(9999)
+
+
+async def test_update_post_publish_sets_date(test_session):
+    """Тест проверяет установку даты публикации при публикации поста."""
+    repo = PostRepository(test_session)
+    service = BlogService(repo)
+    data = PostCreate(
+        title="Тестовый заголовок", description="Описание", published=False
+    )
+    post = await service.create_post(data)
+
+    assert post.published_at is None
+
+    data_pub = PostUpdate(published=True)
+    post_pub = await service.update_post(post.id, data_pub)
+
+    assert post_pub.published_at is not None

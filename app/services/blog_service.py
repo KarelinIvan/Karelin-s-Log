@@ -81,6 +81,9 @@ class BlogService:
         # Превращает Pydantic-схему в словарь
         update_data = data.model_dump(exclude_unset=True)
 
+        # Проверяем, что значение publised присвоено True и
+        # у поля дата публикации не присвоена дата,
+        # тогда присваеваем текущую дату
         if update_data.get("published") is True and post.published_at is None:
             update_data["published_at"] = datetime.now(UTC)
 
