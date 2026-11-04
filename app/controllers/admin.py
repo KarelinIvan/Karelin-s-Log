@@ -1,14 +1,20 @@
 from fastapi import Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from itsdangerous import URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app.controllers.dependencies import password_hash
 from app.controllers.router import admin_router as router
+from app.controllers.router import auth_router
+from app.core.settings import settings
 from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostCreate
 from app.services.blog_service import BlogService
 from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
+
+serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin_session")
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -50,7 +56,27 @@ async def create_post_action(
     return RedirectResponse(url="/admin/", status_code=303)
 
 
-@router.post("/logout")
+@auth_router.get("/login", response_class=HTMLResponse)
+async def login(request: Request):
+    """Отдаёт шаблон авторизации."""
+    return templates.TemplateResponse(request=request, name="admin/login.html")
+
+
+@auth_router.post("/login", response_class=HTMLResponse)
+async def login_action(request: Request, password: str = Form()):
+    """Обрабатывает форму авторизации."""
+    if password_hash.verify(password, settings.ADMIN_PASSWORD_HASH):
+        token = serializer.dumps({"user": "admin"})
+        response = RedirectResponse(url="/admin/", status_code=303)
+        response.set_cookie("admin_session", token, httponly=True, max_age=3600)
+        return response
+    else:
+        return templates.TemplateResponse(request=request, name="admin/login.html")
+
+
+@auth_router.post("/logout")
 async def logout():
     """Перенаправляет на главную страницу после выхода из"""
-    return RedirectResponse(url="/page/", status_code=303)
+    response = RedirectResponse(url="/page/", status_code=303)
+    response.delete_cookie("admin_session")
+    return response
