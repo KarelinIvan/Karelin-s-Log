@@ -13,7 +13,7 @@ from app.core.settings import settings
 from app.models import Post
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env.test")
+load_dotenv(BASE_DIR / ".env.test", override=True)
 
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 
@@ -80,7 +80,7 @@ def apply_migrations():
     yield
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def override_admin_password():
     """Фикстура подменяет хеш пароля администратора на тестовый."""
     test_hash = os.getenv("ADMIN_PASSWORD_HASH")
