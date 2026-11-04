@@ -10,7 +10,9 @@
         <p class="post-detail__date">
             <span>
                 <i class="fa-regular fa-calendar"></i>
-                {{ post.published_at.strftime('%d %B %Y %H:%M') }}
+                {% if post.published_at %}
+                    {{ post.published_at.strftime('%d %B %Y %H:%M') }}
+                {% endif %}
             </span>
         </p>
     </div>
