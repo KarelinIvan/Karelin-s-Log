@@ -5,7 +5,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.controllers import admin, pages, post  # noqa: F401 — регистрирует эндпоинты
-from app.controllers.router import admin_router, pages_router
+from app.controllers.router import admin_router, auth_router, pages_router
 from app.controllers.router import router as post_router
 from app.core.templates import BASE_DIR
 
@@ -31,6 +31,7 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 # Подключение роутеров
 app.include_router(post_router)
 app.include_router(pages_router)
+app.include_router(auth_router)
 app.include_router(admin_router)
 
 if __name__ == "__main__":
