@@ -2,10 +2,12 @@ from datetime import UTC, datetime
 
 from pydantic import EmailStr
 from sqlalchemy import func
-from sqlmodel import AutoString, Field, SQLModel
+from sqlmodel import AutoString, Field
+
+from app.schemas.comment_base import CommentBase
 
 
-class Comment(SQLModel, table=True):
+class Comment(CommentBase, table=True):
     """
     ORM-модель таблицы «Comment» в базе данных PostgreSQL.
 
@@ -26,8 +28,6 @@ class Comment(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True)
     post_id: int = Field(foreign_key="posts.id")
-    author_name: str = Field(description="Автор")
-    text: str = Field()
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
         nullable=False,
