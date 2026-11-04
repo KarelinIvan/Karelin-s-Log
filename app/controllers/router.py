@@ -14,6 +14,11 @@ pages_router = APIRouter(
     prefix="/page", tags=["pages"], dependencies=[Depends(log_request)]
 )
 
+# Auth-роутер
+auth_router = APIRouter(
+    prefix="/admin", tags=["auth"], dependencies=[Depends(log_request)]
+)
+
 # Admin-роутер
 admin_router = APIRouter(
     prefix="/admin",
