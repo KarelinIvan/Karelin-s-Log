@@ -5,12 +5,14 @@
 {% block content %}
 <article class="post-detail">
     <h1 class="post-detail__title">{{ post.title }}</h1>
-    <p class="post-detail__description">{{ post.description }}</p>
+    <p class="post-detail__description">{{ post.description | replace('\n', '<br>') | safe }}</p>
     <div class="post-detail__meta divider-top">
         <p class="post-detail__date">
             <span>
                 <i class="fa-regular fa-calendar"></i>
-                {{ post.created_at.strftime('%d %B %Y %H:%M') }}
+                {% if post.published_at %}
+                    {{ post.published_at.strftime('%d %B %Y %H:%M') }}
+                {% endif %}
             </span>
         </p>
     </div>
@@ -18,14 +20,16 @@
         <a href="/page/" class="post-detail__back-link">Вернуться на главную</a>
     </div>
 
-    <div class="post-detail__management divider-top">
-        <a href="/page/posts/{{ post.id }}/edit" class="btn-primary">Редактировать</a>
-        <form action="/page/posts/{{ post.id }}/delete" method="post">
-            <button type="submit" class="btn-secondary"
-                onclick="return confirm('Вы уверены, что хотите удалить этот пост?');">
-                Удалить
-            </button>
-        </form>
-    </div>
+    {% if current_user %}
+        <div class="post-detail__management divider-top">
+            <a href="/page/posts/{{ post.id }}/edit" class="btn-primary">Редактировать</a>
+            <form action="/page/posts/{{ post.id }}/delete" method="post">
+                <button type="submit" class="btn-secondary"
+                    onclick="return confirm('Вы уверены, что хотите удалить этот пост?');">
+                    Удалить
+                </button>
+            </form>
+        </div>
+    {% endif %}
 </article>
 {% endblock %}

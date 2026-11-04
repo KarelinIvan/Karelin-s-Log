@@ -1,8 +1,10 @@
 from fastapi import Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.controllers.router import pages_router as router
+from app.core.settings import settings
 from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
@@ -10,17 +12,64 @@ from app.schemas.post import PostUpdate
 from app.services.blog_service import BlogService
 from app.services.exceptions import PostNotFoundError
 
+serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin-session")
+
+
+def get_current_user(request: Request) -> str | None:
+    """
+    Возвращает имя авторизованного пользователя из куки.
+
+    Args:
+        request: HTTP-запрос, из которого читается кука.
+    Returns:
+        str | None: Имя пользователя ("admin"), если кука валидна,
+                    иначе None (не авторизован или сессия истекла).
+    """
+    token = request.cookies.get("admin_session")
+    if not token:
+        return None
+
+    try:
+        data = serializer.loads(token, max_age=3600)
+        return data.get("user")
+    except (BadSignature, SignatureExpired):
+        return None
+
 
 @router.get("/", response_class=HTMLResponse)
-async def index(request: Request, session: AsyncSession = Depends(get_session)):
-    """Главная страница со списком постов."""
+async def index(
+    request: Request, page: int = 1, session: AsyncSession = Depends(get_session)
+):
+    """
+    Главная страница со списком постов.
+    Реализована постраничная пагинация (10 постов).
+    Передаёт в шаблон информацию о текущем пользователе
+    (для отображения приветствия или ссылки "Авторизоваться").
+    """
     repo = PostRepository(session)
     service = BlogService(repo)
 
-    posts = await service.get_posts(limit=10)
+    limit = 10
+    # расчёт смещения
+    skip = (page - 1) * limit
+
+    posts = await service.get_posts(skip=skip, limit=limit)
+    total_posts = await service.count_posts()
+
+    # Расчитываем общее количество страниц (округляем вверх)
+    total_pages = (total_posts + limit - 1) // limit
+
+    current_user = get_current_user(request)
 
     return templates.TemplateResponse(
-        request=request, name="index.html", context={"posts": posts}
+        request=request,
+        name="index.html",
+        context={
+            "posts": posts,
+            "page": page,
+            "total_pages": total_pages,
+            "current_user": current_user,
+        },
     )
 
 
@@ -30,7 +79,11 @@ async def post_detail(
     post_id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    """Страница с деталями поста."""
+    """
+    Страница с деталями поста.
+    Передаёт в шаблон информацию о текущем пользователе
+    (для отображения приветствия или ссылки "Авторизоваться").
+    """
     repo = PostRepository(session)
     service = BlogService(repo)
 
@@ -39,8 +92,12 @@ async def post_detail(
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
 
+    current_user = get_current_user(request)
+
     return templates.TemplateResponse(
-        request=request, name="post_detail.html", context={"post": post}
+        request=request,
+        name="post_detail.html",
+        context={"post": post, "current_user": current_user},
     )
 
 
@@ -50,7 +107,11 @@ async def edit_post_page(
     post_id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    """Страница редактирования поста."""
+    """
+    Страница редактирования поста.
+    Передаёт в шаблон информацию о текущем пользователе
+    (для отображения приветствия или ссылки "Авторизоваться").
+    """
     repo = PostRepository(session)
     service = BlogService(repo)
 
@@ -58,8 +119,13 @@ async def edit_post_page(
         post = await service.get_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
+
+    current_user = get_current_user(request)
+
     return templates.TemplateResponse(
-        request=request, name="edit_post.html", context={"post": post}
+        request=request,
+        name="edit_post.html",
+        context={"post": post, "current_user": current_user},
     )
 
 

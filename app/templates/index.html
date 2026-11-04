@@ -4,9 +4,11 @@
 
 {% block content %}
 
+<h1 class="page-title divider-bottom">Последние публикации</h1>
+
 
 {% if posts %}
-<ul>
+<div class="post-list">
     {% for post in posts %}
     <article class="post-card">
         <!-- Левая часть: картинка/иконка -->
@@ -20,17 +22,35 @@
             <h2 class="post-card__title">{{ post.title }}</h2>
 
             <div class="post-card__meta">
-                <span><i class="fa-regular fa-calendar"></i> {{ post.created_at.strftime('%d %B %Y') }}</span>
+                <span><i class="fa-regular fa-calendar"></i> {{ post.published_at.strftime('%d %B %Y') }}</span>
                 <!-- Можно добавить категорию -->
             </div>
 
-            <p class="post-card__description">{{ post.description | truncate(250, True)}}</p>
+            <p class="post-card__description">
+                {{ post.description | replace('\n', '<br>') | safe | truncate(250, True)}}
+            </p>
 
             <a href="/page/posts/{{ post.id }}" class="post-card__link">Подробнее...</a>
         </div>
     </article>
     {% endfor %}
-</ul>
+</div>
+
+<!-- Пагинация -->
+<div class="pagination divider-top">
+    {% if page > 1 %}
+    <a href="/page/?page={{ page - 1 }}" class="btn-primary">Назад</a>
+    {% else %}
+    <span class="btn-primary disabled">Назад</span>
+    {% endif %}
+    <span class="pagination__info">Страница {{ page }} из {{ total_pages }}</span>
+    {% if page < total_pages %}
+    <a href="/page/?page={{ page + 1 }}" class="btn-primary">Далее</a>
+    {% else %}
+    <span class="btn-primary disabled">Далее</span>
+    {% endif %}
+</div>
+
 {% else %}
 <p>Пока нет ни одного поста.</p>
 {% endif %}

@@ -1,0 +1,33 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Создать пост{% endblock %}
+
+{% block content %}
+<article class="post-edit">
+    <h1 class="post-edit__title divider-bottom">Создать новый пост</h1>
+
+    <form class="edit-form" action="/admin/posts/create" method="post">
+        <div class="form-group">
+            <label for="title">Название</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea id="description" name="description" class="form-control" rows="30"></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <label>
+                <input type="checkbox" name="published">
+                Опубликовать
+            </label>
+        </div>
+
+        <div class="edit-form__management">
+            <button class="btn-primary" type="submit">Создать</button>
+            <a href="/admin/" class="btn-secondary">Отмена</a>
+        </div>
+    </form>
+</article>
+{% endblock %}

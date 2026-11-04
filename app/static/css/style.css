@@ -86,6 +86,7 @@ form {
     min-width: 0;
     padding: 10px 12px;
     border: 1px solid var(--color-border);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     font-family: var(--font-family-Inter);
     font-size: var(--text-sm);
@@ -108,6 +109,7 @@ form {
     justify-content: center;
     padding: 10px 12px;
     background-color: var(--color-blue);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     color: var(--color-white);
     border: none;
     border-radius: 5px;
@@ -148,6 +150,10 @@ form {
     font-size: var(--text-base);
 }
 
+.btn-block {
+    width: 100%;
+}
+
 /* Универсальная градиентная линия */
 .divider-top,
 .divider-bottom {
@@ -174,6 +180,29 @@ form {
     bottom: 0;
     height: 1px;
     background: linear-gradient(to right, transparent 0%, var(--color-border) 50%, transparent 100%);
+}
+
+/* Пагинация */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding-top: 20px;
+}
+
+.pagination__info {
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: var(--color-grey);
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
 }
 
 
@@ -298,6 +327,13 @@ form {
     background-color: var(--color-main);
 }
 
+.post-list {}
+
+.page-title {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+}
+
 .post-card {
     display: flex;
     gap: 30px;
@@ -356,6 +392,7 @@ form {
 .post-card__link:hover {
     color: var(--color-blue);
 }
+
 
 /* Правая колонка */
 .sidebar-right {
@@ -507,4 +544,33 @@ form {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid var(--color-border);
+}
+
+/* Страница авторизации */
+.login-form {
+    padding-top: 20px;
+
+}
+
+.login-card {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    margin-bottom: 30px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+}
+
+.login-detail__title {
+    font-family: var(--font-family-Noto-serif);
+    font-style: italic;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.login-form__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }

@@ -44,7 +44,11 @@
             <div class="sidebar-bottom">
                 <div class="sidebar-actions">
                     <div class="sidebar-auth divider-top">
-                        <a href="#" class="sidebar-link">Войти</a>
+                        {% if current_user %}
+                            <a href="/admin" class="sidebar-link">Админка</a>
+                        {% else %}
+                            <a href="/admin/login" class="sidebar-link">Авторизоваться</a>
+                        {% endif %}
                     </div>
                     <h3 class="widget-title divider-top">Подписаться на рассылку</h3>
                     <form class="subscribe-form" action="#" method="post">
@@ -56,6 +60,7 @@
                         </button>
                     </form>
                 </div>
+
                 <div class="copyright divider-top">
                     <p>&copy; 2026 Karelin's log</p>
                 </div>
