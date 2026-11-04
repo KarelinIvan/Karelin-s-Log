@@ -14,7 +14,7 @@ from app.schemas.post import PostCreate
 from app.services.blog_service import BlogService
 from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
 
-serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin_session")
+serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin-session")
 
 
 @router.get("/", response_class=HTMLResponse)
