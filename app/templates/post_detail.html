@@ -20,14 +20,16 @@
         <a href="/page/" class="post-detail__back-link">Вернуться на главную</a>
     </div>
 
-    <div class="post-detail__management divider-top">
-        <a href="/page/posts/{{ post.id }}/edit" class="btn-primary">Редактировать</a>
-        <form action="/page/posts/{{ post.id }}/delete" method="post">
-            <button type="submit" class="btn-secondary"
-                onclick="return confirm('Вы уверены, что хотите удалить этот пост?');">
-                Удалить
-            </button>
-        </form>
-    </div>
+    {% if current_user %}
+        <div class="post-detail__management divider-top">
+            <a href="/page/posts/{{ post.id }}/edit" class="btn-primary">Редактировать</a>
+            <form action="/page/posts/{{ post.id }}/delete" method="post">
+                <button type="submit" class="btn-secondary"
+                    onclick="return confirm('Вы уверены, что хотите удалить этот пост?');">
+                    Удалить
+                </button>
+            </form>
+        </div>
+    {% endif %}
 </article>
 {% endblock %}
