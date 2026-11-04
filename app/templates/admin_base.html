@@ -46,8 +46,9 @@
             <div class="sidebar-bottom divider-top">
                 <div class="sidebar-actions">
                     <h3 class="widget-title divider-top">Авторизация</h3>
-                    <a href="#" class="btn-primary">Войти</a>
-                    <a href="#" class="btn-secondary">Выйти</a>
+                    <form action="/admin/logout" method="post">
+                        <button type="submit" class="btn-secondary">Выйти</button>
+                    </form>
                 </div>
                 <div class="copyright divider-top">
                     <p>&copy; 2026 Karelin's log</p>

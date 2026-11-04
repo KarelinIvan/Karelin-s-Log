@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора{% endblock %}
+
+{% block content %}
+<form action="/admin/login" method="post">
+    <input class="form-control" type="password" name="password">
+    <button class="btn-primary">Авторизоваться</button>
+</form>
+{% endblock %}
