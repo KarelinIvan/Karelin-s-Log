@@ -150,6 +150,10 @@ form {
     font-size: var(--text-base);
 }
 
+.btn-block {
+    width: 100%;
+}
+
 /* Универсальная градиентная линия */
 .divider-top,
 .divider-bottom {
