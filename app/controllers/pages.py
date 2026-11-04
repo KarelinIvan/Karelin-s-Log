@@ -43,6 +43,8 @@ async def index(
     """
     Главная страница со списком постов.
     Реализована постраничная пагинация (10 постов).
+    Передаёт в шаблон информацию о текущем пользователе
+    (для отображения приветствия или ссылки "Авторизоваться").
     """
     repo = PostRepository(session)
     service = BlogService(repo)
@@ -57,10 +59,17 @@ async def index(
     # Расчитываем общее количество страниц (округляем вверх)
     total_pages = (total_posts + limit - 1) // limit
 
+    current_user = get_current_user(request)
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"posts": posts, "page": page, "total_pages": total_pages},
+        context={
+            "posts": posts,
+            "page": page,
+            "total_pages": total_pages,
+            "current_user": current_user,
+        },
     )
 
 
