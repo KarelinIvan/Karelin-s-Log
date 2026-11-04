@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     # Хеш
     ADMIN_PASSWORD_HASH: str
 
+    # Секретный ключ приложения
+    SECRET_KEY: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,
