@@ -1,12 +1,12 @@
-import secrets
-
-from fastapi import Depends, HTTPException, Request
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi import HTTPException, Request
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from pwdlib import PasswordHash
 
 from app.core.settings import settings
 
 password_hash = PasswordHash.recommended()
+
+serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin-session")
 
 
 async def log_request(request: Request):
@@ -14,25 +14,18 @@ async def log_request(request: Request):
     print(f"{request.method} {request.url.path}")
 
 
-async def verify_admin(credentials: HTTPBasicCredentials = Depends(HTTPBasic())):  # noqa: B008
-    """
-    Проверяет логин и пароль администратора.
+async def verify_admin(request: Request):
+    """Проверяет сессию администратора."""
 
-    Returns:
-        str: Имя пользователя (при успешной проверке).
+    token = request.cookies.get("admin_session")
+    if token is None:
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
-    Raises:
-        HTTPException: 401, если логин или пароль неверны.
-    """
+    try:
+        data = serializer.loads(token, max_age=3600)
+    except SignatureExpired:  # Сначала ловим истёкший срок
+        raise HTTPException(status_code=401, detail="Session expired")
+    except BadSignature:  # Потом ловим неверную подпись
+        raise HTTPException(status_code=401, detail="Invalid session token")
 
-    username = secrets.compare_digest(credentials.username, "admin")
-    password = password_hash.verify(credentials.password, settings.ADMIN_PASSWORD_HASH)
-
-    if username and password:
-        return credentials.username
-    else:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid credentials",
-            headers={"WWW-Authenticate": "Basic"},
-        )
+    return data.get("user")
