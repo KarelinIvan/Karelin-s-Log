@@ -48,3 +48,9 @@ async def create_post_action(
     except TitleAlreadyExistsError as e:
         raise HTTPException(status_code=409, detail=str(e)) from e
     return RedirectResponse(url="/admin/", status_code=303)
+
+
+@router.post("/logout")
+async def logout():
+    """Перенаправляет на главную страницу после выхода из"""
+    return RedirectResponse(url="/page/", status_code=303)
