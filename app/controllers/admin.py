@@ -63,9 +63,14 @@ async def login(request: Request):
 
 
 @auth_router.post("/login", response_class=HTMLResponse)
-async def login_action(request: Request, password: str = Form()):
+async def login_action(
+    request: Request, password: str = Form(), username: str = Form()
+):
     """Обрабатывает форму авторизации."""
-    if password_hash.verify(password, settings.ADMIN_PASSWORD_HASH):
+    if (
+        password_hash.verify(password, settings.ADMIN_PASSWORD_HASH)
+        and username == "admin"
+    ):
         token = serializer.dumps({"user": "admin"})
         response = RedirectResponse(url="/admin/", status_code=303)
         response.set_cookie("admin_session", token, httponly=True, max_age=3600)
