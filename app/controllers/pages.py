@@ -1,14 +1,39 @@
 from fastapi import Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.controllers.router import pages_router as router
+from app.core.settings import settings
 from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostUpdate
 from app.services.blog_service import BlogService
 from app.services.exceptions import PostNotFoundError
+
+serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin-session")
+
+
+def get_current_user(request: Request) -> str | None:
+    """
+    Возвращает имя авторизованного пользователя из куки.
+
+    Args:
+        request: HTTP-запрос, из которого читается кука.
+    Returns:
+        str | None: Имя пользователя ("admin"), если кука валидна,
+                    иначе None (не авторизован или сессия истекла).
+    """
+    token = request.cookies.get("admin_session")
+    if not token:
+        return None
+
+    try:
+        data = serializer.loads(token, max_age=3600)
+        return data.get("user")
+    except (BadSignature, SignatureExpired):
+        return None
 
 
 @router.get("/", response_class=HTMLResponse)
