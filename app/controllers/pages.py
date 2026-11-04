@@ -79,7 +79,11 @@ async def post_detail(
     post_id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    """Страница с деталями поста."""
+    """
+    Страница с деталями поста.
+    Передаёт в шаблон информацию о текущем пользователе
+    (для отображения приветствия или ссылки "Авторизоваться").
+    """
     repo = PostRepository(session)
     service = BlogService(repo)
 
@@ -88,8 +92,12 @@ async def post_detail(
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
 
+    current_user = get_current_user(request)
+
     return templates.TemplateResponse(
-        request=request, name="post_detail.html", context={"post": post}
+        request=request,
+        name="post_detail.html",
+        context={"post": post, "current_user": current_user},
     )
 
 
@@ -99,7 +107,11 @@ async def edit_post_page(
     post_id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    """Страница редактирования поста."""
+    """
+    Страница редактирования поста.
+    Передаёт в шаблон информацию о текущем пользователе
+    (для отображения приветствия или ссылки "Авторизоваться").
+    """
     repo = PostRepository(session)
     service = BlogService(repo)
 
@@ -107,8 +119,13 @@ async def edit_post_page(
         post = await service.get_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
+
+    current_user = get_current_user(request)
+
     return templates.TemplateResponse(
-        request=request, name="edit_post.html", context={"post": post}
+        request=request,
+        name="edit_post.html",
+        context={"post": post, "current_user": current_user},
     )
 
 
