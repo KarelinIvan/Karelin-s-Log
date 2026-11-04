@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlmodel import delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app.core.settings import settings
 from app.models import Post
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,4 +77,12 @@ def apply_migrations():
 
     # Применяем миграции синхронно
     command.upgrade(config, "head")
+    yield
+
+
+@pytest.fixture(autouse=True)
+def override_admin_password():
+    """Фикстура подменяет хеш пароля администратора на тестовый."""
+    test_hash = os.getenv("ADMIN_PASSWORD_HASH")
+    settings.ADMIN_PASSWORD_HASH = test_hash
     yield
