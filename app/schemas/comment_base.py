@@ -1,5 +1,5 @@
 from pydantic import EmailStr
-from sqlmodel import AutoString, Field, SQLModel
+from sqlmodel import Field, SQLModel
 
 
 class CommentBase(SQLModel):
@@ -14,4 +14,4 @@ class CommentBase(SQLModel):
 
     author_name: str = Field(description="Автор")
     text: str = Field(description="Содержание")
-    email: EmailStr = Field(sa_type=AutoString, description="Email автора")
+    email: EmailStr = Field(description="Email автора")
