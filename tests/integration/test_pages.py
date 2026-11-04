@@ -19,23 +19,35 @@ async def test_edit_post_page(async_client, sample_post):
 
 async def test_admin_dashboard(async_client):
     """Тест проверяет, что корректно открывается страница панели администратора."""
-    response = await async_client.get("/admin/", auth=("admin", "testpassword"))
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
+    )
+    assert response_login.status_code == 303
+
+    response = await async_client.get("/admin/")
     assert response.status_code == 200
 
 
 async def test_admin_create_post_page(async_client):
     """Тест проверяет, что корректно открывается страница для создания поста в админ панели."""
-    response = await async_client.get(
-        "/admin/posts/create", auth=("admin", "testpassword")
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
     )
+    assert response_login.status_code == 303
+
+    response = await async_client.get("/admin/posts/create")
     assert response.status_code == 200
 
 
 async def test_admin_create_post_action(async_client, test_session):
     """Тестп роверяет, что форма для создания поста корректно работает."""
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
+    )
+    assert response_login.status_code == 303
+
     response = await async_client.post(
         "/admin/posts/create",
         data={"title": "Заголовок", "description": "Описание", "published": True},
-        auth=("admin", "testpassword"),
     )
     assert response.status_code == 303
