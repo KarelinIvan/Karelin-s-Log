@@ -541,3 +541,32 @@ form {
     padding-top: 20px;
     border-top: 1px solid var(--color-border);
 }
+
+/* Страница авторизации */
+.login-form {
+    padding-top: 20px;
+
+}
+
+.login-card {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    margin-bottom: 30px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+}
+
+.login-detail__title {
+    font-family: var(--font-family-Noto-serif);
+    font-style: italic;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.login-form__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
