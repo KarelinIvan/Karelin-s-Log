@@ -20,10 +20,11 @@ async def create_post(
     session: AsyncSession = Depends(get_session),
 ) -> PostRead:
     """Создаёт новый пост в базе данных."""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
+
     try:
-        post = await service.create_post(data)
+        post = await post_service.create_post(data)
     except TitleEmptyError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except TitleAlreadyExistsError as e:
@@ -37,10 +38,11 @@ async def get_post(
     session: AsyncSession = Depends(get_session),
 ) -> PostRead:
     """Находит пост в базе данных по ID."""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
+
     try:
-        post = await service.get_post(post_id)
+        post = await post_service.get_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
     return post  # type: ignore
@@ -53,10 +55,10 @@ async def get_posts(
     session: AsyncSession = Depends(get_session),
 ) -> list[PostRead]:
     """Возвращает список всех постов"""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
-    posts = await service.get_posts(skip=skip, limit=limit)
+    posts = await post_service.get_posts(skip=skip, limit=limit)
     return posts  # type: ignore
 
 
@@ -65,11 +67,11 @@ async def update_post(
     post_id: int, data: PostUpdate, session: AsyncSession = Depends(get_session)
 ) -> PostRead:
     """Обновляет пост частичными данными."""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     try:
-        post = await service.update_post(post_id, data)
+        post = await post_service.update_post(post_id, data)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
     return post  # type: ignore
@@ -80,10 +82,10 @@ async def delete_post(
     post_id: int, session: AsyncSession = Depends(get_session)
 ) -> None:
     """Удаляет пост по ID."""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     try:
-        await service.delete_post(post_id)
+        await post_service.delete_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e

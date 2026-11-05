@@ -11,12 +11,12 @@ async def test_repository_create(test_session):
     Проверяет, что посту присвоено ID.
     Проверяет, что все поля заполнены верно.
     """
-    repo = PostRepository(test_session)
+    post_repo = PostRepository(test_session)
     data = PostCreate(
         title="Тестовый заголовок",
         description="Описание",
     )
-    post = await repo.create(data)
+    post = await post_repo.create(data)
 
     # Проверяем присвоение id
     assert post.id is not None
@@ -31,15 +31,15 @@ async def test_repository_create(test_session):
 
 async def test_repository_get_by_id(test_session, sample_post):
     """Тест проверяет поиск постов по ID в репозитории."""
-    repo = PostRepository(test_session)
+    post_repo = PostRepository(test_session)
 
     # Ищем существующий пост (из фикстуры)
-    found = await repo.get_by_id(sample_post.id)
+    found = await post_repo.get_by_id(sample_post.id)
 
-    # Проверяем, что книга найдена и совпадает по ID
+    # Проверяем, что пост найден и совпадает по ID
     assert found is not None
     assert found.id == sample_post.id
 
     # Проверяем, что несуществующий ID возвращает None
-    missing_post = await repo.get_by_id(9999)
+    missing_post = await post_repo.get_by_id(9999)
     assert missing_post is None

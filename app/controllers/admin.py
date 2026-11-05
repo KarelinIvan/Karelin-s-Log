@@ -41,14 +41,14 @@ async def create_post_action(
     session: AsyncSession = Depends(get_session),
 ):
     """Обрабатывает форму создания поста."""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     # Создаём данные для сервиса (PostCreate)
     data = PostCreate(title=title, description=description, published=published)
 
     try:
-        await service.create_post(data)
+        await post_service.create_post(data)
     except TitleEmptyError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except TitleAlreadyExistsError as e:

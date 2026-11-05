@@ -48,15 +48,15 @@ async def index(
     Передаёт в шаблон информацию о текущем пользователе
     (для отображения приветствия или ссылки "Авторизоваться").
     """
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     limit = 10
     # расчёт смещения
     skip = (page - 1) * limit
 
-    posts = await service.get_posts(skip=skip, limit=limit)
-    total_posts = await service.count_posts()
+    posts = await post_service.get_posts(skip=skip, limit=limit)
+    total_posts = await post_service.count_posts()
 
     # Расчитываем общее количество страниц (округляем вверх)
     total_pages = (total_posts + limit - 1) // limit
@@ -86,14 +86,14 @@ async def post_detail(
     Передаёт в шаблон информацию о текущем пользователе
     (для отображения приветствия или ссылки "Авторизоваться").
     """
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     comment_repo = CommentRepository(session)
     comment_service = CommentService(comment_repo)
 
     try:
-        post = await service.get_post(post_id)
+        post = await post_service.get_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
 
@@ -119,11 +119,11 @@ async def edit_post_page(
     Передаёт в шаблон информацию о текущем пользователе
     (для отображения приветствия или ссылки "Авторизоваться").
     """
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     try:
-        post = await service.get_post(post_id)
+        post = await post_service.get_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
 
@@ -145,13 +145,13 @@ async def edit_post_action(
     session: AsyncSession = Depends(get_session),
 ):
     """Обрабатывает форму редактирования поста."""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     update_data = PostUpdate(title=title, description=description, published=published)
 
     try:
-        await service.update_post(post_id, update_data)
+        await post_service.update_post(post_id, update_data)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
     return RedirectResponse(url=f"/page/posts/{post_id}", status_code=303)
@@ -162,11 +162,11 @@ async def delete_post_action(
     post_id: int, session: AsyncSession = Depends(get_session)
 ):
     """Удаляет пост и перенаправляет на главную страницу."""
-    repo = PostRepository(session)
-    service = PostService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     try:
-        await service.delete_post(post_id)
+        await post_service.delete_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
     return RedirectResponse(url="/page/", status_code=303)
