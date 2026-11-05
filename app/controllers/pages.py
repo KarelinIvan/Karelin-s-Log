@@ -9,6 +9,7 @@ from app.core.templates import templates
 from app.database.repositories.comment import CommentRepository
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
+from app.schemas.comment import CommentCreate
 from app.schemas.post import PostUpdate
 from app.services.comment_service import CommentService
 from app.services.exceptions import PostNotFoundError
@@ -170,3 +171,20 @@ async def delete_post_action(
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
     return RedirectResponse(url="/page/", status_code=303)
+
+
+@router.post("/posts/{post_id}/comments")
+async def post_comment_action(
+    post_id: int,
+    author_name: str = Form(),
+    text: str = Form(),
+    email: str = Form(),
+    session: AsyncSession = Depends(get_session),
+):
+    """Обрабатывает форму записи комментариев."""
+    comment_repo = CommentRepository(session)
+    comment_service = CommentService(comment_repo)
+
+    data = CommentCreate(author_name=author_name, text=text, email=email)
+    await comment_service.create_comment(data, post_id)
+    return RedirectResponse(url=f"/page/posts/{post_id}", status_code=303)
