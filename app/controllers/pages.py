@@ -6,9 +6,11 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.controllers.router import pages_router as router
 from app.core.settings import settings
 from app.core.templates import templates
+from app.database.repositories.comment import CommentRepository
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostUpdate
+from app.services.comment_service import CommentService
 from app.services.exceptions import PostNotFoundError
 from app.services.post_service import PostService
 
@@ -87,17 +89,22 @@ async def post_detail(
     repo = PostRepository(session)
     service = PostService(repo)
 
+    comment_repo = CommentRepository(session)
+    comment_service = CommentService(comment_repo)
+
     try:
         post = await service.get_post(post_id)
     except PostNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
+
+    comments = await comment_service.get_comments(post_id)
 
     current_user = get_current_user(request)
 
     return templates.TemplateResponse(
         request=request,
         name="post_detail.html",
-        context={"post": post, "current_user": current_user},
+        context={"post": post, "current_user": current_user, "comments": comments},
     )
 
 
