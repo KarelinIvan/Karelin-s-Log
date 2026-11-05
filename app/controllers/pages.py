@@ -9,8 +9,8 @@ from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostUpdate
-from app.services.blog_service import BlogService
 from app.services.exceptions import PostNotFoundError
+from app.services.post_service import PostService
 
 serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin-session")
 
@@ -47,7 +47,7 @@ async def index(
     (для отображения приветствия или ссылки "Авторизоваться").
     """
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     limit = 10
     # расчёт смещения
@@ -85,7 +85,7 @@ async def post_detail(
     (для отображения приветствия или ссылки "Авторизоваться").
     """
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     try:
         post = await service.get_post(post_id)
@@ -113,7 +113,7 @@ async def edit_post_page(
     (для отображения приветствия или ссылки "Авторизоваться").
     """
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     try:
         post = await service.get_post(post_id)
@@ -139,7 +139,7 @@ async def edit_post_action(
 ):
     """Обрабатывает форму редактирования поста."""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     update_data = PostUpdate(title=title, description=description, published=published)
 
@@ -156,7 +156,7 @@ async def delete_post_action(
 ):
     """Удаляет пост и перенаправляет на главную страницу."""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     try:
         await service.delete_post(post_id)

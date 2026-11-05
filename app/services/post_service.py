@@ -10,7 +10,7 @@ from app.services.exceptions import (
 )
 
 
-class BlogService:
+class PostService:
     def __init__(self, repo: PostRepository):
         self.repo = repo
 

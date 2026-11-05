@@ -11,8 +11,8 @@ from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostCreate
-from app.services.blog_service import BlogService
 from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
+from app.services.post_service import PostService
 
 serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin-session")
 
@@ -42,7 +42,7 @@ async def create_post_action(
 ):
     """Обрабатывает форму создания поста."""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     # Создаём данные для сервиса (PostCreate)
     data = PostCreate(title=title, description=description, published=published)

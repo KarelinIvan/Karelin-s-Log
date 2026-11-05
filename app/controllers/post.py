@@ -6,12 +6,12 @@ from app.controllers.router import router
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.post import PostCreate, PostRead, PostUpdate
-from app.services.blog_service import BlogService
 from app.services.exceptions import (
     PostNotFoundError,
     TitleAlreadyExistsError,
     TitleEmptyError,
 )
+from app.services.post_service import PostService
 
 
 @router.post("/", response_model=PostRead, status_code=201)
@@ -21,7 +21,7 @@ async def create_post(
 ) -> PostRead:
     """Создаёт новый пост в базе данных."""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
     try:
         post = await service.create_post(data)
     except TitleEmptyError as e:
@@ -38,7 +38,7 @@ async def get_post(
 ) -> PostRead:
     """Находит пост в базе данных по ID."""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
     try:
         post = await service.get_post(post_id)
     except PostNotFoundError as e:
@@ -54,7 +54,7 @@ async def get_posts(
 ) -> list[PostRead]:
     """Возвращает список всех постов"""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     posts = await service.get_posts(skip=skip, limit=limit)
     return posts  # type: ignore
@@ -66,7 +66,7 @@ async def update_post(
 ) -> PostRead:
     """Обновляет пост частичными данными."""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     try:
         post = await service.update_post(post_id, data)
@@ -81,7 +81,7 @@ async def delete_post(
 ) -> None:
     """Удаляет пост по ID."""
     repo = PostRepository(session)
-    service = BlogService(repo)
+    service = PostService(repo)
 
     try:
         await service.delete_post(post_id)
