@@ -323,7 +323,7 @@ form {
 /* Центральная колонка */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 70px;
     background-color: var(--color-main);
 }
 
@@ -573,4 +573,101 @@ form {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+/* Комментарии */
+.comments {
+    padding: 30px;
+}
+
+.comments__title {
+    font-family: var(--font-family-Noto-serif);
+    font-style: italic;
+    color: var(--color-black);
+    padding-bottom: 20px;
+}
+
+.comment-form-card {
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+    padding: 30px;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comment-form__input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: var(--color-grey);
+    outline: none;
+    transition: border-color 0.2s ease;
+    background-color: var(--color-white);
+}
+
+.comment-form__input::placeholder {
+    color: var(--color-grey);
+}
+
+.comment-form__input:focus {
+    border-color: var(--color-blue);
+}
+
+.comment-form .btn-primary {
+    align-self: flex-end;
+    width: fit-content;
+    padding: 10px 30px;
+}
+
+.comments-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+    max-width: 70%;
+}
+
+.comments-card__author {
+    font-family: var(--font-family-Inter);
+    color: var(--color-black);
+    text-align: justify;
+}
+
+.comments-card__content {
+    font-family: var(--font-family-Inter);
+    color: var(--color-grey);
+    text-align: justify;
+}
+
+.comments-card__date {
+    font-family: var(--font-family-Inter);
+    color: var(--color-grey);
+    text-align: right;
+    font-size: var(--text-sm);
+}
+
+.comments-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
 }

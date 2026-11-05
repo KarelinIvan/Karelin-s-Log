@@ -3,6 +3,7 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
+<!-- Детали поста -->
 <article class="post-detail">
     <h1 class="post-detail__title">{{ post.title }}</h1>
     <p class="post-detail__description">{{ post.description | replace('\n', '<br>') | safe }}</p>
@@ -32,4 +33,42 @@
         </div>
     {% endif %}
 </article>
+
+<!-- Комментарии -->
+<section class="comments divider-top">
+    <h1 class="comments__title">Комментарии</h1>
+
+    <!-- Форма для отправки комментария -->
+    <div class="comment-form-card">
+        <form class="comment-form" action="/page/posts/{{ post.id }}/comments" method="post">
+            <input type="text" name="author_name" class="comment-form__input" placeholder="Ваше имя">
+            <textarea name="text" id="text" class="comment-form__input" rows="5" placeholder="Комментарий"></textarea>
+            <input type="email" name="email" class="comment-form__input" placeholder="Ваш e-mail">
+            <button type="submit" class="btn-primary">Отправить</button>
+        </form>
+    </div>
+
+    <!-- Форма комментариев (в разработке) -->
+    {% if comments %}
+        {% for comment in comments %}
+            <div class="comments-card">
+                <p class="comments-card__author">
+                   Автор: {{ comment.author_name }}
+                </p>
+                <p class="comments-card__content">
+                    {{ comment.text }}
+                </p>
+                <p class="comments-card__date">
+                    {{ comment.created_at.strftime('%d %B %Y %H:%M') }}
+                </p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="comments-empty">
+            <p class="comments-card__content">
+                Комментарии отсутствуют
+            </p>
+        </div>
+    {% endif %}
+</section>
 {% endblock %}
