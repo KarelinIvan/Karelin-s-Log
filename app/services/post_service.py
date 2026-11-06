@@ -113,11 +113,11 @@ class PostService:
 
         await self.repo.delete(post)
 
-    async def count_posts(self) -> int:
+    async def count_posts(self, published: bool | None = None) -> int:
         """
         Возвращает общее количество постов.
 
         Returns:
-            int: Количество постов.
+            int: Количество опубликованных постов.
         """
-        return await self.repo.count()
+        return await self.repo.count(published=published)

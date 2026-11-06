@@ -103,13 +103,17 @@ class PostRepository:
         await self.session.delete(post)
         await self.session.commit()
 
-    async def count(self) -> int:
+    async def count(self, published: bool | None = None) -> int:
         """
-        Метод возвращает общее количество постов в базе данных.
+        Метод возвращает количество постов в базе данных.
 
         Returns:
-            int: Количество постов в базе данных.
+            int: Количество постов.
         """
+        query = select(func.count()).select_from(Post)
 
-        result = await self.session.exec(select(func.count()).select_from(Post))
+        if published is not None:
+            query = query.where(Post.published == published)
+
+        result = await self.session.exec(query)
         return result.one()

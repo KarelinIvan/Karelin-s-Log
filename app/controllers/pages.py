@@ -58,7 +58,7 @@ async def index(
     skip = (page - 1) * limit
 
     posts = await post_service.get_posts(skip=skip, limit=limit, published=True)
-    total_posts = await post_service.count_posts()
+    total_posts = await post_service.count_posts(published=True)
 
     # Расчитываем общее количество страниц (округляем вверх)
     total_pages = (total_posts + limit - 1) // limit
