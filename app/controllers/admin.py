@@ -4,6 +4,7 @@ from itsdangerous import URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.controllers.dependencies import password_hash
+from app.controllers.pages import get_current_user
 from app.controllers.router import admin_router as router
 from app.controllers.router import auth_router
 from app.core.settings import settings
@@ -85,3 +86,49 @@ async def logout():
     response = RedirectResponse(url="/page/", status_code=303)
     response.delete_cookie("admin_session")
     return response
+
+
+@router.get("/posts", response_class=HTMLResponse)
+async def admin_list_posts(
+    request: Request,
+    page: int = 1,
+    status: str = "all",
+    session: AsyncSession = Depends(get_session),
+):
+    """
+    Страница адинки, которая отображает список всех постов с фильтрацией
+    (опубликованные, черновики, все посты)
+    """
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
+
+    limit = 50
+    skip = (page - 1) * limit
+
+    published = None
+
+    if status == "published":
+        published = True
+    elif status == "draft":
+        published = False
+    elif status == "all":
+        published = None
+
+    posts = await post_service.get_posts(skip=skip, limit=limit, published=published)
+    total_posts = await post_service.count_posts(published=published)
+
+    total_page = (total_posts + limit - 1) // limit
+
+    current_user = get_current_user(request)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/posts_list.html",
+        context={
+            "posts": posts,
+            "page": page,
+            "total_pages": total_page,
+            "status": status,
+            "curerent_user": current_user,
+        },
+    )
