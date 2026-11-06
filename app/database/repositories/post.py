@@ -46,21 +46,28 @@ class PostRepository:
         result = await self.session.exec(select(Post).where(Post.id == post_id))
         return result.first()
 
-    async def get_all(self, skip: int = 0, limit: int = 10) -> list[Post]:
+    async def get_all(
+        self, skip: int = 0, limit: int = 10, published: bool | None = None
+    ) -> list[Post]:
         """
         Метод возвращает список постов с пагинацией и сортирует его по дате публикации.
-        Отображает только опубликованные посты.
+        Отображает опубликованные посты и черновики.
 
         Args:
             skip (int): Сколько записей пропустить.
             limit (int): Сколько записей вернуть (по умолчанию 10).
+            published (bool | None): Фильтр по статусу: True — опубликованные,
+                False — черновики, None — все посты». Но это не критично.
+        Returns:
+            list[Post]: Возвращает список постов.
         """
+        query = select(Post)
+
+        if published is not None:
+            query = query.where(Post.published == published)
+
         result = await self.session.exec(
-            select(Post)
-            .where(Post.published == True)
-            .order_by(col(Post.published_at).desc())
-            .offset(skip)
-            .limit(limit)
+            query.order_by(col(Post.published_at).desc()).offset(skip).limit(limit)
         )
         return list(result.all())
 
