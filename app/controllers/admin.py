@@ -11,7 +11,7 @@ from app.core.settings import settings
 from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
-from app.schemas.post import PostCreate
+from app.schemas.post import PostCreate, PostUpdate
 from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
 from app.services.post_service import PostService
 
@@ -132,3 +132,23 @@ async def admin_list_posts(
             "curerent_user": current_user,
         },
     )
+
+
+@router.post("/posts/{post_id}/action")
+async def admin_post_action(
+    post_id: int, action: str = Form(), session: AsyncSession = Depends(get_session)
+):
+    """Выполняет обработку выбранного селектора 'действия' в админке."""
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
+
+    if action == "publish":
+        update_date = PostUpdate(published=True)
+        await post_service.update_post(post_id, update_date)
+    elif action == "unpublish":
+        update_date = PostUpdate(published=False)
+        await post_service.update_post(post_id, update_date)
+    elif action == "delete":
+        await post_service.delete_post(post_id)
+
+    return RedirectResponse(url="/admin/posts", status_code=303)
