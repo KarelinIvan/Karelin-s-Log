@@ -3,26 +3,31 @@
 {% block title %}Все посты{% endblock %}
 
 {% block content %}
-<h1 class="page-title divider-bottom">Все посты</h1>
+<h1 class="page-title divider-bottom">Список постов</h1>
 
 <!-- Фильтры -->
 <div class="admin-filters">
-    <a href="/admin/posts?status=all"
-       class="btn-{% if status == 'all' %}primary{% else %}secondary{% endif %}">Все</a>
-    <a href="/admin/posts?status=published"
-       class="btn-{% if status == 'published' %}primary{% else %}secondary{% endif %}">Опубликованные</a>
-    <a href="/admin/posts?status=draft"
-       class="btn-{% if status == 'draft' %}primary{% else %}secondary{% endif %}">Черновики</a>
+    <h3>Фильтры:  </h3>
+    <select class="filter-select" onchange="window.location.href='/admin/posts?status=' + this.value">
+        <option value="all" {% if status == 'all' %}selected{% endif %}>Все</option>
+        <option value="published" {% if status == 'published' %}selected{% endif %}>Опубликованные</option>
+        <option value="draft" {% if status == 'draft' %}selected{% endif %}>Черновики</option>
+    </select>
 </div>
 
 <!-- Таблица постов -->
 {% if posts %}
+
+<div class="admin-table-wrapper">
     <table class="admin-table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Название поста</th>
                 <th>Статус</th>
+                <th>Дата создания</th>
+                <th>Дата обновления</th>
+                <th>Дата публикации</th>
                 <th>Действия</th>
             </tr>
         </thead>
@@ -40,12 +45,22 @@
                             <span class="status-draft">Черновик</span>
                         {% endif %}
                     </td>
+                    <td>{{ post.created_at.strftime('%d.%m.%Y') }}</td>
+                    <td>{{ post.updated_at.strftime('%d.%m.%Y') }}</td>
+                    <td>
+                        {% if post.published_at %}
+                            {{ post.published_at.strftime('%d.%m.%Y') }}
+                        {% else %}
+                            <span>-</span>
+                        {% endif %}
+                    </td>
                     <td class="admin-table__actions">
 
                         <!-- Селектор действий -->
                         <form action="/admin/posts/{{ post.id }}/action" method="post" class="action-form">
-                            <select name="action" class="action-select" onchange="this.form.submit()">
-                                <option value="" disabled selected>Действие</option>
+                            <select name="action" class="action-select" onchange="handleAction(this, '{{ post.id }}')">
+                                <option value="" disabled selected>Выбрать</option>
+                                <option value="edit">Редактировать</option>
                                 {% if post.published %}
                                     <option value="unpublish">Черновик</option>
                                 {% else %}
@@ -54,13 +69,12 @@
                                 <option value="delete">Удалить</option>
                             </select>
                         </form>
-                        <!-- Кнопка Редактировать (отдельно) -->
-                        <a href="/page/posts/{{ post.id }}/edit" class="btn-primary btn-sm">Редактировать</a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% else %}
     <div class="comments-card">
         <p class="comments-card__content">Постов пока нет.</p>

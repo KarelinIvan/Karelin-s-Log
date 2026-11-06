@@ -30,6 +30,8 @@
     --color-main: #f4f5f7;
     --color-shadow: rgba(0, 0, 0, 0.05);
     --color-black: #000000;
+    --color-row-even: #f9fafb;
+    --color-row-hover: #f1f3f5;
 }
 
 html {
@@ -79,6 +81,7 @@ form {
     padding: 0;
     margin: 0;
 }
+
 
 /* Универсальные стили для форм */
 .form-control {
@@ -204,7 +207,6 @@ form {
     pointer-events: none;
     box-shadow: none;
 }
-
 
 /* Каркас: три колонки */
 .page-wrapper {
@@ -673,22 +675,33 @@ form {
 }
 
 /* Админка: таблица постов */
+.admin-content {
+    min-width: 0;
+}
+
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+}
+
 .admin-table {
     width: 100%;
+    min-width: 1200px;
+    table-layout: fixed;
     border-collapse: collapse;
     background-color: var(--color-white);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px var(--color-shadow);
-    margin-bottom: 30px;
 }
 
 .admin-table th,
 .admin-table td {
-    padding: 5px;
+    padding: 8px 10px;
     text-align: left;
     font-family: var(--font-family-Inter);
     font-size: var(--text-sm);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .admin-table th {
@@ -696,17 +709,65 @@ form {
     color: var(--color-grey);
     font-weight: 600;
     border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+}
+
+/* Колонка ID */
+.admin-table th:nth-child(1),
+.admin-table td:nth-child(1) {
+    width: 40px;
+    text-align: center;
+}
+
+/* Колонка Название */
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) {
+    width: 800px;
+    text-align: left;
+}
+
+/* Колонка Статус */
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3) {
+    width: 120px;
+    text-align: center;
+}
+
+/* Колонка Дата создания */
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4) {
+    width: 150px;
+    text-align: center;
+}
+
+/* Колонка Дата обновления */
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) {
+    width: 150px;
+    text-align: center;
+}
+
+/* Колонка Дата публикации */
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) {
+    width: 150px;
+    text-align: center;
+}
+
+/* Колонка Действия */
+.admin-table th:nth-child(7),
+.admin-table td:nth-child(7) {
+    width: 130px;
+    text-align: center;
 }
 
 /* Чередование строк (зебра) */
 .admin-table tbody tr:nth-child(even) {
-    background-color: #f9fafb;
-    /* Очень светлый серый */
+    background-color: var(--color-row-even);
 }
 
 .admin-table tbody tr:hover {
-    background-color: #f1f3f5;
-    /* Чуть темнее при наведении */
+    background-color: var(--color-row-hover);
 }
 
 .admin-table__link {
@@ -724,7 +785,7 @@ form {
     display: flex;
     gap: 10px;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .btn-sm {
@@ -732,7 +793,6 @@ form {
     font-size: var(--text-xs);
 }
 
-/* Статусы */
 .status-published {
     color: var(--color-blue);
     font-weight: 600;
@@ -743,21 +803,9 @@ form {
     font-weight: 600;
 }
 
-/* Фильтры (уже были, но на всякий случай) */
-.admin-filters {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-/* Стили для селектора действий */
-.action-form {
-    display: inline-block;
-    margin-left: 10px;
-}
-
 .action-select {
-    padding: 6px 12px;
+    width: 110px;
+    padding: 3px 6px;
     border: 1px solid var(--color-border);
     border-radius: 5px;
     background-color: var(--color-white);
@@ -769,6 +817,27 @@ form {
     transition: border-color 0.2s ease;
 }
 
-.action-select:focus {
+/* Фильтры в админке (селектор) */
+.admin-filters {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.filter-select {
+    padding: 5px 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    background-color: var(--color-white);
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-base);
+    color: var(--color-grey);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+    min-width: 100px;
+}
+
+.filter-select:focus {
     border-color: var(--color-blue);
 }
