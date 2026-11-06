@@ -18,13 +18,6 @@
                 rows="30">{{ post.description }}</textarea>
         </div>
 
-        <div class="form-group checkbox-group">
-            <label>
-                <input type="checkbox" name="published" {% if post.published %}checked{% endif %}>
-                Опубликовать
-            </label>
-        </div>
-
         <div class="edit-form__management">
             <button class="btn-primary" type="submit">Сохранить</button>
             <a href="/page/posts/{{ post.id }}" class="btn-primary">Отмена</a>

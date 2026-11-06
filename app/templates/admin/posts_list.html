@@ -1,0 +1,86 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Все посты{% endblock %}
+
+{% block content %}
+<h1 class="page-title divider-bottom">Все посты</h1>
+
+<!-- Фильтры -->
+<div class="admin-filters">
+    <a href="/admin/posts?status=all"
+       class="btn-{% if status == 'all' %}primary{% else %}secondary{% endif %}">Все</a>
+    <a href="/admin/posts?status=published"
+       class="btn-{% if status == 'published' %}primary{% else %}secondary{% endif %}">Опубликованные</a>
+    <a href="/admin/posts?status=draft"
+       class="btn-{% if status == 'draft' %}primary{% else %}secondary{% endif %}">Черновики</a>
+</div>
+
+<!-- Таблица постов -->
+{% if posts %}
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название поста</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+                <tr>
+                    <td>{{ post.id }}</td>
+                    <td>
+                        <a href="/page/posts/{{ post.id }}" class="admin-table__link">{{ post.title }}</a>
+                    </td>
+                    <td>
+                        {% if post.published %}
+                            <span class="status-published">Опубликован</span>
+                        {% else %}
+                            <span class="status-draft">Черновик</span>
+                        {% endif %}
+                    </td>
+                    <td class="admin-table__actions">
+
+                        <!-- Селектор действий -->
+                        <form action="/admin/posts/{{ post.id }}/action" method="post" class="action-form">
+                            <select name="action" class="action-select" onchange="this.form.submit()">
+                                <option value="" disabled selected>Действие</option>
+                                {% if post.published %}
+                                    <option value="unpublish">Черновик</option>
+                                {% else %}
+                                    <option value="publish">Опубликовать</option>
+                                {% endif %}
+                                <option value="delete">Удалить</option>
+                            </select>
+                        </form>
+                        <!-- Кнопка Редактировать (отдельно) -->
+                        <a href="/page/posts/{{ post.id }}/edit" class="btn-primary btn-sm">Редактировать</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="comments-card">
+        <p class="comments-card__content">Постов пока нет.</p>
+    </div>
+{% endif %}
+
+<!-- Пагинация -->
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="/admin/posts?page={{ page - 1 }}&status={{ status }}" class="btn-primary">Назад</a>
+    {% else %}
+        <span class="btn-primary disabled">Назад</span>
+    {% endif %}
+
+    <span class="pagination__info">Страница {{ page }} из {{ total_pages }}</span>
+
+    {% if page < total_pages %}
+        <a href="/admin/posts?page={{ page + 1 }}&status={{ status }}" class="btn-primary">Далее</a>
+    {% else %}
+        <span class="btn-primary disabled">Далее</span>
+    {% endif %}
+</div>
+{% endblock %}
