@@ -46,6 +46,7 @@ async def index(
     """
     Главная страница со списком постов.
     Реализована постраничная пагинация (10 постов).
+    Отображает только опубликованные посты published=True.
     Передаёт в шаблон информацию о текущем пользователе
     (для отображения приветствия или ссылки "Авторизоваться").
     """
@@ -56,7 +57,7 @@ async def index(
     # расчёт смещения
     skip = (page - 1) * limit
 
-    posts = await post_service.get_posts(skip=skip, limit=limit)
+    posts = await post_service.get_posts(skip=skip, limit=limit, published=True)
     total_posts = await post_service.count_posts()
 
     # Расчитываем общее количество страниц (округляем вверх)
