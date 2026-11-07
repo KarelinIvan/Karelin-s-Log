@@ -50,3 +50,15 @@ class CommentRepository:
             .order_by(col(Comment.created_at).asc())
         )
         return list(result.all())
+
+    async def get_by_id(self, comment_id: int) -> Comment | None:
+        """
+        Возвращает комментарий.
+
+        Returns:
+            Возвращает комментарий.
+        """
+        result = await self.session.exec(
+            select(Comment).where(Comment.id == comment_id)
+        )
+        return result.first()
