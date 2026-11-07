@@ -54,11 +54,11 @@ async def get_posts(
     limit: int = Query(10, ge=1, le=100, description="Сколько вернуть (макс.100)"),
     session: AsyncSession = Depends(get_session),
 ) -> list[PostRead]:
-    """Возвращает список всех постов"""
+    """Возвращает список всех опубликованных постов."""
     post_repo = PostRepository(session)
     post_service = PostService(post_repo)
 
-    posts = await post_service.get_posts(skip=skip, limit=limit)
+    posts = await post_service.get_posts(skip=skip, limit=limit, published=True)
     return posts  # type: ignore
 
 
