@@ -841,3 +841,87 @@ form {
 .filter-select:focus {
     border-color: var(--color-blue);
 }
+
+/* Форма ответа на комментарий */
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+.reply-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: var(--color-grey);
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+.reply-form textarea:focus {
+    border-color: var(--color-blue);
+}
+
+.reply-form .btn-primary {
+    align-self: flex-end;
+    width: fit-content;
+    padding: 6px 16px;
+}
+
+/* -- Дерово комментариев -- */
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.comments-thread {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.comments-thread--user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.comments-thread--mine {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.comments-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.comments-replies {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+    width: 100%;
+    padding-left: 15px;
+}
+
+.comments-card--reply {
+    background-color: var(--color-row-even);
+    box-shadow: 0 1px 5px var(--color-shadow);
+    padding: 15px 20px;
+}

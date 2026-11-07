@@ -41,28 +41,61 @@
     <!-- Форма для отправки комментария -->
     <div class="comment-form-card">
         <form class="comment-form" action="/page/posts/{{ post.id }}/comments" method="post">
-            <input type="text" name="author_name" class="comment-form__input" placeholder="Ваше имя">
-            <textarea name="text" id="text" class="comment-form__input" rows="5" placeholder="Комментарий"></textarea>
-            <input type="email" name="email" class="comment-form__input" placeholder="Ваш e-mail">
+            <input type="text" name="author_name" class="comment-form__input" placeholder="Ваше имя" required>
+            <textarea name="text" id="text" class="comment-form__input" rows="5" placeholder="Комментарий" required></textarea>
+            <input type="email" name="email" class="comment-form__input" placeholder="Ваш e-mail" required>
             <button type="submit" class="btn-primary">Отправить</button>
         </form>
     </div>
 
-    <!-- Форма комментариев (в разработке) -->
+    <!-- Список комментариев -->
     {% if comments %}
-        {% for comment in comments %}
-            <div class="comments-card">
-                <p class="comments-card__author">
-                   Автор: {{ comment.author_name }}
-                </p>
-                <p class="comments-card__content">
-                    {{ comment.text }}
-                </p>
-                <p class="comments-card__date">
-                    {{ comment.created_at.strftime('%d %B %Y %H:%M') }}
-                </p>
-            </div>
-        {% endfor %}
+        <div class="comments-list"> <!-- Обертка для flexbox -->
+            {% for comment in comments %}
+                <!-- Обертка для одного треда (комментарий + его ответы) -->
+                <div class="comments-thread {% if comment.author_name == admin_name %}comments-thread--mine{% else %}comments-thread--user{% endif %}">
+
+                    <!-- Сама карточка корневого комментария -->
+                    <div class="comments-card {% if comment.author_name == admin_name %}comments-card--mine{% else %}comments-card--user{% endif %}">
+                        <p class="comments-card__author">
+                           Автор: {{ comment.author_name }}
+                        </p>
+                        <p class="comments-card__content">
+                            {{ comment.text }}
+                        </p>
+                        <p class="comments-card__date">
+                            {{ comment.created_at.strftime('%d %B %Y %H:%M') }}
+                        </p>
+                        {% if current_user %}
+                            <form class="reply-form" action="/page/comments/{{ comment.id }}/reply" method="post">
+                                <textarea name="text" class="comment-form__input" rows="3" placeholder="Введите текст..." required></textarea>
+                                <button type="submit" class="btn-primary btn-sm">Ответить</button>
+                            </form>
+                        {% endif %}
+                    </div> <!-- Конец карточки корневого -->
+
+                    <!-- Блок ответов -->
+                    {% if comment.replies %}
+                        <div class="comments-replies">
+                            {% for reply in comment.replies %}
+                                <div class="comments-card comments-card--reply {% if reply.author_name == admin_name %}comments-card--mine{% else %}comments-card--user{% endif %}">
+                                    <p class="comments-card__author">
+                                       Автор: {{ reply.author_name }}
+                                    </p>
+                                    <p class="comments-card__content">
+                                        {{ reply.text }}
+                                    </p>
+                                    <p class="comments-card__date">
+                                        {{ reply.created_at.strftime('%d %B %Y %H:%M') }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div> <!-- Конец треда -->
+            {% endfor %}
+        </div>
     {% else %}
         <div class="comments-empty">
             <p class="comments-card__content">
