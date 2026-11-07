@@ -50,7 +50,7 @@ class CommentRepository:
             .order_by(col(Comment.created_at).asc())
         )
 
-        return list(result.scalars().all())
+        return list(result.all())
 
     async def get_tree_by_post_id(self, post_id: int) -> list[Comment]:
         """
@@ -72,7 +72,9 @@ class CommentRepository:
             if comment.parent_id is None:
                 # Утверждаем для Pylance/mypy, что id у корневого комментария есть
                 assert comment.id is not None
-                comment.replies = replies_by_parent.get(comment.id, [])
+                object.__setattr__(
+                    comment, "replies", replies_by_parent.get(comment.id, [])
+                )
                 root_comments.append(comment)
 
         return root_comments

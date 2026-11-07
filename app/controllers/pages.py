@@ -106,7 +106,12 @@ async def post_detail(
     return templates.TemplateResponse(
         request=request,
         name="post_detail.html",
-        context={"post": post, "current_user": current_user, "comments": comments},
+        context={
+            "post": post,
+            "current_user": current_user,
+            "comments": comments,
+            "admin_name": settings.ADMIN_NAME,
+        },
     )
 
 

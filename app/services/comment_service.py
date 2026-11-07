@@ -33,7 +33,7 @@ class CommentService:
         Returns:
             list[Comment]: Возвращает список комментариев.`
         """
-        return await self.repo.get_by_post_id(post_id)
+        return await self.repo.get_tree_by_post_id(post_id)
 
     async def get_comment_by_id(self, comment_id: int) -> Comment | None:
         """
