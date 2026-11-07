@@ -22,6 +22,7 @@ class Comment(CommentBase, table=True):
                     на уровне приложения (`default_factory`), так и на уровне
                     базы данных (`server_default`).
         email (EmailStr): Email автора комментария.
+        parent_id (int | None): Ссылка на родительский комментарий.
     """
 
     __tablename__ = "comments"  # type: ignore
@@ -35,3 +36,4 @@ class Comment(CommentBase, table=True):
         description="Дата создания",
     )
     email: EmailStr = Field(sa_type=AutoString, description="Email автора")
+    parent_id: int | None = Field(default=None, foreign_key="comments.id")

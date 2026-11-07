@@ -8,17 +8,21 @@ class CommentService:
         """Сохраняет репозиторий."""
         self.repo = repo
 
-    async def create_comment(self, data: CommentCreate, post_id: int) -> Comment:
+    async def create_comment(
+        self, data: CommentCreate, post_id: int, parent_id: int | None = None
+    ) -> Comment:
         """
         Принимает валидные данные и возвращает результат.
 
         Args:
             data (CommentCreate): Валидированные данные комментария.
             post_id (int): ID поста которому принадлежит комментарий.
+            parent_id (int | None): Ссылка на родительский комментарий.
+
         Returns:
             Comment: Созданный комментарий с присвоенным id и временными метками.
         """
-        return await self.repo.create(data, post_id)
+        return await self.repo.create(data, post_id, parent_id)
 
     async def get_comments(self, post_id: int) -> list[Comment]:
         """

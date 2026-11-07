@@ -10,13 +10,17 @@ class CommentRepository:
         """Сохраняет сессию."""
         self.session = session
 
-    async def create(self, data: CommentCreate, post_id: int) -> Comment:
+    async def create(
+        self, data: CommentCreate, post_id: int, parent_id: int | None = None
+    ) -> Comment:
         """
         Создаёт новый комментарий в базе данных.
 
         Args:
             data (CommentCreate): Валидные данные комментария.
             post_id (int): ID поста к которым принадлежит комментарий.
+            parent_id (int | None): Ссылка на родительский комментарий.
+
         Returns:
                 Comment: ORM-объект с присвоенным id и заполненными created_at.
         """
@@ -25,6 +29,7 @@ class CommentRepository:
             text=data.text,
             email=data.email,
             post_id=post_id,
+            parent_id=parent_id,
         )
         self.session.add(comment)
         await self.session.commit()
