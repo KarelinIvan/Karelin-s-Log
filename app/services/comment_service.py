@@ -34,3 +34,16 @@ class CommentService:
             list[Comment]: Возвращает список комментариев.`
         """
         return await self.repo.get_by_post_id(post_id)
+
+    async def get_comment_by_id(self, comment_id: int) -> Comment | None:
+        """
+        Возвращает комментарий по ID.
+
+        Args:
+            comment_id (int): ID комментария.
+
+        Returns:
+            Comment / None: Возвращает комментарий или None, если не найден.
+        """
+
+        return await self.repo.get_by_id(comment_id)
