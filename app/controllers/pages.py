@@ -189,3 +189,28 @@ async def post_comment_action(
     data = CommentCreate(author_name=author_name, text=text, email=email)
     await comment_service.create_comment(data, post_id)
     return RedirectResponse(url=f"/page/posts/{post_id}", status_code=303)
+
+
+@router.post("/comments/{comment_id}/reply")
+async def post_comment_reply(
+    comment_id: int, text: str = Form(), session: AsyncSession = Depends(get_session)
+):
+    """Обрабатывает форму для ответа на комментарии."""
+    comment_repo = CommentRepository(session)
+    comment_service = CommentService(comment_repo)
+
+    parent_comment = await comment_service.get_comment_by_id(comment_id)
+
+    if parent_comment is None:
+        raise HTTPException(status_code=404, detail="Комментарий отсутствует")
+
+    data = CommentCreate(
+        author_name=settings.ADMIN_NAME, text=text, email=settings.ADMIN_EMAIL
+    )
+
+    await comment_service.create_comment(
+        data, parent_comment.post_id, parent_id=comment_id
+    )
+    return RedirectResponse(
+        url=f"/page/posts/{parent_comment.post_id}", status_code=303
+    )
