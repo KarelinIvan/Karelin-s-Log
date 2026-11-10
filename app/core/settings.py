@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     # Секретный ключ приложения
     SECRET_KEY: str
 
+    # Имя администратора
+    ADMIN_NAME: str = "Admin"
+    # E-mail администратора
+    ADMIN_EMAIL: str = "admin@example.ru"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,

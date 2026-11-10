@@ -10,7 +10,7 @@ from app.services.exceptions import (
 )
 
 
-class BlogService:
+class PostService:
     def __init__(self, repo: PostRepository):
         self.repo = repo
 
@@ -53,15 +53,21 @@ class BlogService:
             raise PostNotFoundError(f"Пост с id: {post_id} не найден")
         return post
 
-    async def get_posts(self, skip: int = 0, limit: int = 10) -> list[Post]:
+    async def get_posts(
+        self, skip: int = 0, limit: int = 10, published: bool | None = None
+    ) -> list[Post]:
         """
         Возвращает список постов с пагинацией.
 
         Args:
             skip (int): Сколько постов пропустить.
             limit (int): Сколько постов вернуть.
+            published (bool | None): Фильтр по статусу: True — опубликованные,
+                            False — черновики, None — все посты».
+        Returns:
+            list[Post]: Возвращает список постов.
         """
-        return await self.repo.get_all(skip=skip, limit=limit)
+        return await self.repo.get_all(skip=skip, limit=limit, published=published)
 
     async def update_post(self, post_id: int, data: PostUpdate) -> Post:
         """
@@ -107,11 +113,11 @@ class BlogService:
 
         await self.repo.delete(post)
 
-    async def count_posts(self) -> int:
+    async def count_posts(self, published: bool | None = None) -> int:
         """
         Возвращает общее количество постов.
 
         Returns:
-            int: Количество постов.
+            int: Количество опубликованных постов.
         """
-        return await self.repo.count()
+        return await self.repo.count(published=published)

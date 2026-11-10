@@ -46,21 +46,28 @@ class PostRepository:
         result = await self.session.exec(select(Post).where(Post.id == post_id))
         return result.first()
 
-    async def get_all(self, skip: int = 0, limit: int = 10) -> list[Post]:
+    async def get_all(
+        self, skip: int = 0, limit: int = 10, published: bool | None = None
+    ) -> list[Post]:
         """
         Метод возвращает список постов с пагинацией и сортирует его по дате публикации.
-        Отображает только опубликованные посты.
+        Отображает опубликованные посты и черновики.
 
         Args:
             skip (int): Сколько записей пропустить.
             limit (int): Сколько записей вернуть (по умолчанию 10).
+            published (bool | None): Фильтр по статусу: True — опубликованные,
+                False — черновики, None — все посты».
+        Returns:
+            list[Post]: Возвращает список постов.
         """
+        query = select(Post)
+
+        if published is not None:
+            query = query.where(Post.published == published)
+
         result = await self.session.exec(
-            select(Post)
-            .where(Post.published == True)
-            .order_by(col(Post.published_at).desc())
-            .offset(skip)
-            .limit(limit)
+            query.order_by(col(Post.published_at).desc()).offset(skip).limit(limit)
         )
         return list(result.all())
 
@@ -96,13 +103,17 @@ class PostRepository:
         await self.session.delete(post)
         await self.session.commit()
 
-    async def count(self) -> int:
+    async def count(self, published: bool | None = None) -> int:
         """
-        Метод возвращает общее количество постов в базе данных.
+        Метод возвращает количество постов в базе данных.
 
         Returns:
-            int: Количество постов в базе данных.
+            int: Количество постов.
         """
+        query = select(func.count()).select_from(Post)
 
-        result = await self.session.exec(select(func.count()).select_from(Post))
+        if published is not None:
+            query = query.where(Post.published == published)
+
+        result = await self.session.exec(query)
         return result.one()

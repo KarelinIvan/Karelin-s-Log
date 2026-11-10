@@ -4,15 +4,16 @@ from itsdangerous import URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.controllers.dependencies import password_hash
+from app.controllers.pages import get_current_user
 from app.controllers.router import admin_router as router
 from app.controllers.router import auth_router
 from app.core.settings import settings
 from app.core.templates import templates
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
-from app.schemas.post import PostCreate
-from app.services.blog_service import BlogService
+from app.schemas.post import PostCreate, PostUpdate
 from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
+from app.services.post_service import PostService
 
 serializer = URLSafeTimedSerializer(settings.SECRET_KEY, salt="admin-session")
 
@@ -41,14 +42,14 @@ async def create_post_action(
     session: AsyncSession = Depends(get_session),
 ):
     """Обрабатывает форму создания поста."""
-    repo = PostRepository(session)
-    service = BlogService(repo)
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
 
     # Создаём данные для сервиса (PostCreate)
     data = PostCreate(title=title, description=description, published=published)
 
     try:
-        await service.create_post(data)
+        await post_service.create_post(data)
     except TitleEmptyError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except TitleAlreadyExistsError as e:
@@ -85,3 +86,69 @@ async def logout():
     response = RedirectResponse(url="/page/", status_code=303)
     response.delete_cookie("admin_session")
     return response
+
+
+@router.get("/posts", response_class=HTMLResponse)
+async def admin_list_posts(
+    request: Request,
+    page: int = 1,
+    status: str = "all",
+    session: AsyncSession = Depends(get_session),
+):
+    """
+    Страница адинки, которая отображает список всех постов с фильтрацией
+    (опубликованные, черновики, все посты)
+    """
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
+
+    limit = 50
+    skip = (page - 1) * limit
+
+    published = None
+
+    if status == "published":
+        published = True
+    elif status == "draft":
+        published = False
+    elif status == "all":
+        published = None
+
+    posts = await post_service.get_posts(skip=skip, limit=limit, published=published)
+    total_posts = await post_service.count_posts(published=published)
+
+    total_page = (total_posts + limit - 1) // limit
+
+    current_user = get_current_user(request)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/posts_list.html",
+        context={
+            "posts": posts,
+            "page": page,
+            "total_pages": total_page,
+            "status": status,
+            "current_user": current_user,
+        },
+    )
+
+
+@router.post("/posts/{post_id}/action")
+async def admin_post_action(
+    post_id: int, action: str = Form(), session: AsyncSession = Depends(get_session)
+):
+    """Выполняет обработку выбранного селектора 'действия' в админке."""
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
+
+    if action == "publish":
+        update_date = PostUpdate(published=True)
+        await post_service.update_post(post_id, update_date)
+    elif action == "unpublish":
+        update_date = PostUpdate(published=False)
+        await post_service.update_post(post_id, update_date)
+    elif action == "delete":
+        await post_service.delete_post(post_id)
+
+    return RedirectResponse(url="/admin/posts", status_code=303)

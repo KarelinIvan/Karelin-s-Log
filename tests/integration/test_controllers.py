@@ -101,9 +101,9 @@ async def test_get_posts(async_client, sample_post):
 
 async def test_get_posts_pagination(async_client, test_session):
     """Тест проверяет пагинацию (skip и limit)"""
-    repo = PostRepository(test_session)
+    post_repo = PostRepository(test_session)
     for i in range(3):
-        await repo.create(
+        await post_repo.create(
             PostCreate(title=f"Пост {i}", description="Описание", published=True)
         )
 
@@ -126,7 +126,7 @@ async def test_get_posts_pagination(async_client, test_session):
 
 
 async def test_update_post(async_client, sample_post):
-    """Тест проверяет частичное измение поста через API."""
+    """Тест проверяет частичное изменение поста через API."""
     response = await async_client.patch(
         f"/posts/{sample_post.id}",
         json={"title": "новое название"},
@@ -144,16 +144,16 @@ async def test_update_post_not_found(async_client):
     Тест проверяет ошибку 404 PostNotFoundError,
     при обновлении несуществующего поста.
     """
-    msg_id = 9999
+    missing_id = 9999
     response = await async_client.patch(
-        f"/posts/{msg_id}",
+        f"/posts/{missing_id}",
         json={"title": "новое название"},
     )
 
     assert response.status_code == 404
 
     data = response.json()
-    assert data["detail"] == f"Пост с id: {msg_id} не найден"
+    assert data["detail"] == f"Пост с id: {missing_id} не найден"
 
 
 async def test_delete_post(async_client, sample_post):
@@ -171,7 +171,7 @@ async def test_delete_post_not_found(async_client):
     Тест проверяет ошибку 404 PostNotFoundError,
     при удалении несуществующего поста.
     """
-    msg_id = 9999
-    response = await async_client.delete(f"/posts/{msg_id}")
+    missing_id = 9999
+    response = await async_client.delete(f"/posts/{missing_id}")
 
     assert response.status_code == 404

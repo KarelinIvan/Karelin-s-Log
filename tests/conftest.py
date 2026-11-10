@@ -10,7 +10,7 @@ from sqlmodel import delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.settings import settings
-from app.models import Post
+from app.models import Comment, Post
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env.test", override=True)
@@ -55,6 +55,8 @@ async def test_session(test_engine):
         expire_on_commit=False,
     )
     async with sessionmaker() as session:
+        await session.exec(delete(Comment))
+        await session.commit()
         await session.exec(delete(Post))
         await session.commit()
         yield session

@@ -30,6 +30,8 @@
     --color-main: #f4f5f7;
     --color-shadow: rgba(0, 0, 0, 0.05);
     --color-black: #000000;
+    --color-row-even: #f9fafb;
+    --color-row-hover: #f1f3f5;
 }
 
 html {
@@ -79,6 +81,7 @@ form {
     padding: 0;
     margin: 0;
 }
+
 
 /* Универсальные стили для форм */
 .form-control {
@@ -205,7 +208,6 @@ form {
     box-shadow: none;
 }
 
-
 /* Каркас: три колонки */
 .page-wrapper {
     display: flex;
@@ -323,7 +325,7 @@ form {
 /* Центральная колонка */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 70px;
     background-color: var(--color-main);
 }
 
@@ -573,4 +575,353 @@ form {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+/* Комментарии */
+.comments {
+    padding: 30px;
+}
+
+.comments__title {
+    font-family: var(--font-family-Noto-serif);
+    font-style: italic;
+    color: var(--color-black);
+    padding-bottom: 20px;
+}
+
+.comment-form-card {
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+    padding: 30px;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comment-form__input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: var(--color-grey);
+    outline: none;
+    transition: border-color 0.2s ease;
+    background-color: var(--color-white);
+}
+
+.comment-form__input::placeholder {
+    color: var(--color-grey);
+}
+
+.comment-form__input:focus {
+    border-color: var(--color-blue);
+}
+
+.comment-form .btn-primary {
+    align-self: flex-end;
+    width: fit-content;
+    padding: 10px 30px;
+}
+
+.comments-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+    max-width: 70%;
+}
+
+.comments-card__author {
+    font-family: var(--font-family-Inter);
+    color: var(--color-black);
+    text-align: justify;
+}
+
+.comments-card__content {
+    font-family: var(--font-family-Inter);
+    color: var(--color-grey);
+    text-align: justify;
+}
+
+.comments-card__date {
+    font-family: var(--font-family-Inter);
+    color: var(--color-grey);
+    text-align: right;
+    font-size: var(--text-sm);
+}
+
+.comments-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+}
+
+/* Админка: таблица постов */
+.admin-content {
+    min-width: 0;
+}
+
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 1200px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: var(--color-white);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 8px 10px;
+    text-align: left;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-table th {
+    background-color: var(--color-main);
+    color: var(--color-grey);
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+}
+
+/* Колонка ID */
+.admin-table th:nth-child(1),
+.admin-table td:nth-child(1) {
+    width: 40px;
+    text-align: center;
+}
+
+/* Колонка Название */
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) {
+    width: 800px;
+    text-align: left;
+}
+
+/* Колонка Статус */
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3) {
+    width: 120px;
+    text-align: center;
+}
+
+/* Колонка Дата создания */
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4) {
+    width: 150px;
+    text-align: center;
+}
+
+/* Колонка Дата обновления */
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) {
+    width: 150px;
+    text-align: center;
+}
+
+/* Колонка Дата публикации */
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) {
+    width: 150px;
+    text-align: center;
+}
+
+/* Колонка Действия */
+.admin-table th:nth-child(7),
+.admin-table td:nth-child(7) {
+    width: 130px;
+    text-align: center;
+}
+
+/* Чередование строк (зебра) */
+.admin-table tbody tr:nth-child(even) {
+    background-color: var(--color-row-even);
+}
+
+.admin-table tbody tr:hover {
+    background-color: var(--color-row-hover);
+}
+
+.admin-table__link {
+    color: var(--color-black);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.admin-table__link:hover {
+    color: var(--color-blue);
+    text-decoration: underline;
+}
+
+.admin-table__actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: var(--text-xs);
+}
+
+.status-published {
+    color: var(--color-blue);
+    font-weight: 600;
+}
+
+.status-draft {
+    color: var(--color-red);
+    font-weight: 600;
+}
+
+.action-select {
+    width: 110px;
+    padding: 3px 6px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    background-color: var(--color-white);
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-xs);
+    color: var(--color-grey);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+/* Фильтры в админке (селектор) */
+.admin-filters {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.filter-select {
+    padding: 5px 5px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    background-color: var(--color-white);
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-base);
+    color: var(--color-grey);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+    min-width: 100px;
+}
+
+.filter-select:focus {
+    border-color: var(--color-blue);
+}
+
+/* Форма ответа на комментарий */
+.reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+.reply-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-sm);
+    color: var(--color-grey);
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+.reply-form textarea:focus {
+    border-color: var(--color-blue);
+}
+
+.reply-form .btn-primary {
+    align-self: flex-end;
+    width: fit-content;
+    padding: 6px 16px;
+}
+
+/* -- Дерово комментариев -- */
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.comments-thread {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.comments-thread--user {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.comments-thread--mine {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.comments-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px var(--color-shadow);
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.comments-replies {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+    width: 100%;
+    padding-left: 15px;
+}
+
+.comments-card--reply {
+    background-color: var(--color-row-even);
+    box-shadow: 0 1px 5px var(--color-shadow);
+    padding: 15px 20px;
 }

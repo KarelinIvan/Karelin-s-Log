@@ -21,7 +21,15 @@
     <!-- Подключение стилей -->
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-
+<script>
+    function handleAction(select, postId) {
+        if (select.value == "edit") {
+            window.location.href = "/page/posts/" + postId + "/edit";
+        } else {
+            select.form.submit();
+        }
+    }
+</script>
 <body>
     <div class="page-wrapper">
         <!-- Левый сайдбар админки -->
@@ -37,6 +45,7 @@
                         <li><a href="/page/" class="sidebar-link">На сайт</a></li>
                         <li><a href="/admin/" class="sidebar-link">Дашборд</a></li>
                         <li><a href="/admin/posts/create" class="sidebar-link">Создать пост</a></li>
+                        <li><a href="/admin/posts" class="sidebar-link">Список постов</a></li>
                         <!-- Позже добавим управление постами и выход -->
                     </ul>
                 </nav>
@@ -57,7 +66,7 @@
         </aside>
 
         <!-- Контентная часть (без правого сайдбара) -->
-        <div class="main-content">
+        <div class="main-content admin-content">
             <main>
                 {% block content %}
                 {% endblock %}
