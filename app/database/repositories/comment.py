@@ -1,3 +1,4 @@
+from sqlalchemy.orm import selectinload
 from sqlmodel import col, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -46,38 +47,13 @@ class CommentRepository:
         """
         result = await self.session.exec(
             select(Comment)
+            .options(selectinload(Comment.replies))  # type: ignore
             .where(Comment.post_id == post_id)
+            .where(Comment.parent_id == None)
             .order_by(col(Comment.created_at).asc())
         )
 
         return list(result.all())
-
-    async def get_tree_by_post_id(self, post_id: int) -> list[Comment]:
-        """
-        Возвращает дерево комментариев поста.
-        Список корневых комментариев (parent_id is None); у каждого есть
-        атрибут .replies — список прямых ответов
-        """
-
-        all_comments = await self.get_by_post_id(post_id)
-
-        # Ключ словаря строго int, так как группируется только те у которых parent_id не None
-        replies_by_parent: dict[int, list[Comment]] = {}
-        for comment in all_comments:
-            if comment.parent_id is not None:
-                replies_by_parent.setdefault(comment.parent_id, []).append(comment)
-
-        root_comments: list[Comment] = []
-        for comment in all_comments:
-            if comment.parent_id is None:
-                # Утверждаем для Pylance/mypy, что id у корневого комментария есть
-                assert comment.id is not None
-                object.__setattr__(
-                    comment, "replies", replies_by_parent.get(comment.id, [])
-                )
-                root_comments.append(comment)
-
-        return root_comments
 
     async def get_by_id(self, comment_id: int) -> Comment | None:
         """

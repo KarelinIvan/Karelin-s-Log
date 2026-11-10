@@ -1,8 +1,9 @@
 from datetime import UTC, datetime
+from typing import Optional
 
 from pydantic import EmailStr
 from sqlalchemy import func
-from sqlmodel import AutoString, Field
+from sqlmodel import AutoString, Field, Relationship
 
 from app.schemas.comment_base import CommentBase
 
@@ -37,3 +38,10 @@ class Comment(CommentBase, table=True):
     )
     email: EmailStr = Field(sa_type=AutoString, description="Email автора")
     parent_id: int | None = Field(default=None, foreign_key="comments.id")
+    parent: Optional["Comment"] = Relationship(
+        back_populates="replies", sa_relationship_kwargs={"remote_side": "Comment.id"}
+    )
+    replies: list["Comment"] = Relationship(
+        back_populates="parent",
+        sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete-orphan"},
+    )
