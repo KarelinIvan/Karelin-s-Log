@@ -129,7 +129,7 @@ async def admin_list_posts(
             "page": page,
             "total_pages": total_page,
             "status": status,
-            "curerent_user": current_user,
+            "current_user": current_user,
         },
     )
 
