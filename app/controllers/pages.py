@@ -219,3 +219,13 @@ async def post_comment_reply(
     return RedirectResponse(
         url=f"/page/posts/{parent_comment.post_id}", status_code=303
     )
+
+
+@router.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    """Страница отображения информации 'Обо мне'."""
+    current_user = get_current_user(request)
+
+    return templates.TemplateResponse(
+        request=request, name="about.html", context={"current_user": current_user}
+    )
