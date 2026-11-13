@@ -12,3 +12,4 @@ class AboutBase(SQLModel):
     content: str = Field(
         min_length=100, max_length=10000, description="Содержание страницы 'Обо мне'"
     )
+    photo: bytes | None = Field(default=None)
