@@ -928,7 +928,7 @@ form {
 
 /* --- Стили для страницы "Обо мне" --- */
 .about-page {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     text-align: left;
 }
@@ -947,49 +947,28 @@ form {
 }
 
 .about-photo {
-    width: 60%;
+    width: 50%;
     height: auto;
-    display: block;
     border-radius: 8px;
     box-shadow: 0 4px 15px var(--color-shadow);
     flex-shrink: 0;
 }
 
 .about-intro .post-detail__description {
-    width: 30%;
+    width: 50%;
     margin-bottom: 0;
     margin-top: 0;
 }
 
-.about-subtitle {
-    font-family: var(--font-family-Noto-serif);
-    font-style: italic;
-    color: var(--color-black);
-    font-size: var(--text-2xl);
-    margin-top: 30px;
+.about-content .post-detail__description {
+    line-height: 1.7;
     margin-bottom: 15px;
-}
-
-.about-list {
-    list-style-type: disc;
-    padding-left: 20px;
-    margin-bottom: 20px;
-    line-height: 1.6;
-    text-align: left;
-}
-
-.about-list li {
-    margin-bottom: 8px;
-}
-
-.about-list li strong {
-    color: var(--color-black);
+    white-space: pre-wrap;
 }
 
 .about-signature {
     margin-top: 40px;
     padding-top: 20px;
-    border-top: 1px dashed var(--color-border);
     font-style: italic;
     text-align: right;
     color: var(--color-black);

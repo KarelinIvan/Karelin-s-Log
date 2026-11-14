@@ -76,6 +76,7 @@
         </div>
 
         <!-- Правая колонка (Сайдбар) -->
+        {% if request.url.path != '/page/about' %}
         <aside class="sidebar-right">
             <div class="widget">
                 <h3 class="widget-title">Поиск</h3>
@@ -101,6 +102,7 @@
 
             <!-- Сюда можно добавить блок "Популярные статьи" -->
         </aside>
+        {% endif %}
     </div>
 </body>
 
