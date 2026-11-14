@@ -1,16 +1,18 @@
 from fastapi import Depends, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.controllers.router import pages_router as router
 from app.core.settings import settings
 from app.core.templates import templates
+from app.database.repositories.about import AboutRepository
 from app.database.repositories.comment import CommentRepository
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.schemas.comment import CommentCreate
 from app.schemas.post import PostUpdate
+from app.services.about_service import AboutService
 from app.services.comment_service import CommentService
 from app.services.exceptions import PostNotFoundError
 from app.services.post_service import PostService
@@ -222,10 +224,31 @@ async def post_comment_reply(
 
 
 @router.get("/about", response_class=HTMLResponse)
-async def about(request: Request):
+async def about(request: Request, session: AsyncSession = Depends(get_session)):
     """Страница отображения информации 'Обо мне'."""
+    about_repo = AboutRepository(session)
+    about_service = AboutService(about_repo)
+
+    about = await about_service.get()
+
     current_user = get_current_user(request)
 
     return templates.TemplateResponse(
-        request=request, name="about.html", context={"current_user": current_user}
+        request=request,
+        name="about.html",
+        context={"current_user": current_user, "about": about},
     )
+
+
+@router.get("/about/photo")
+async def about_photo(session: AsyncSession = Depends(get_session)):
+    """Отображает фото на странице 'Обо мне'."""
+    about_repo = AboutRepository(session)
+    about_service = AboutService(about_repo)
+
+    about = await about_service.get()
+
+    if about is None or about.photo is None:
+        raise HTTPException(status_code=404, detail="Фото не найдено")
+    else:
+        return Response(content=about.photo, media_type="image/jpeg")

@@ -1,4 +1,4 @@
-from fastapi import Depends, Form, HTTPException, Request
+from fastapi import Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from itsdangerous import URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -9,9 +9,12 @@ from app.controllers.router import admin_router as router
 from app.controllers.router import auth_router
 from app.core.settings import settings
 from app.core.templates import templates
+from app.database.repositories.about import AboutRepository
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
+from app.models.about import About
 from app.schemas.post import PostCreate, PostUpdate
+from app.services.about_service import AboutService
 from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
 from app.services.post_service import PostService
 
@@ -152,3 +155,47 @@ async def admin_post_action(
         await post_service.delete_post(post_id)
 
     return RedirectResponse(url="/admin/posts", status_code=303)
+
+
+@router.get("/about", response_class=HTMLResponse)
+async def admin_about(request: Request, session: AsyncSession = Depends(get_session)):
+    """Страница отображения информации 'Обо мне'."""
+    about_repo = AboutRepository(session)
+    about_service = AboutService(about_repo)
+
+    about = await about_service.get()
+    current_user = get_current_user(request)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/about_edit.html",
+        context={"about": about, "current_user": current_user},
+    )
+
+
+@router.post("/about")
+async def admin_about_action(
+    content: str = Form(),
+    photo: UploadFile | None = File(None),
+    session: AsyncSession = Depends(get_session),
+):
+    """Выполняет обработку формы изменения данных страницы 'Обо мне'."""
+    about_repo = AboutRepository(session)
+    about_service = AboutService(about_repo)
+
+    about = await about_service.get()
+
+    data: dict[str, str | bytes] = {"content": content}
+
+    photo_bytes = None
+    if photo is not None:
+        photo_bytes = await photo.read()
+        data["photo"] = photo_bytes
+
+    if about is None:
+        new_about = About(content=content, photo=photo_bytes)
+        session.add(new_about)
+        await session.commit()
+    elif about is not None:
+        await about_service.update(about, data)
+    return RedirectResponse(url="/admin/about", status_code=303)

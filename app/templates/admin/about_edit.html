@@ -1,0 +1,37 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Редактировать страницу "Обо мне"{% endblock %}
+
+{% block content %}
+<article class="about-edit">
+    <h1 class="about-edit__title divider-bottom">Редактировать страницу "Обо мне"</h1>
+
+    <form class="edit-form" action="/admin/about" method="post" enctype="multipart/form-data">
+
+        <!-- Поле для загрузки фото -->
+        <div class="form-group">
+            <label for="photo">Фото</label>
+            <input type="file" name="photo" accept="image/*" class="form-control">
+            {% if about and about.photo %}
+                <p>
+                    Текущее фото загружено (размер: {{ about.photo | length }} байт)
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Поле для текста (с выводом текущего значения) -->
+        <div class="form-group">
+            <label for="content">Содержимое</label>
+            <textarea id="content" name="content" class="form-control" rows="30" required>
+                {{- about.content if about else '' -}}
+            </textarea>
+        </div>
+
+        <!-- Кнопки управления -->
+        <div class="edit-form__management">
+            <button class="btn-primary" type="submit">Сохранить</button>
+            <a href="/admin/" class="btn-secondary">Отмена</a>
+        </div>
+    </form>
+</article>
+{% endblock %}

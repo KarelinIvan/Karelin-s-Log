@@ -51,3 +51,15 @@ async def test_admin_create_post_action(async_client, test_session):
         data={"title": "Заголовок", "description": "Описание", "published": True},
     )
     assert response.status_code == 303
+
+
+async def test_about(async_client):
+    """Тест проверяет, отображение страницы 'Обо мне'."""
+    response = await async_client.get("/page/about")
+    assert response.status_code == 200
+
+
+async def test_admin_about_post_unautorized(async_client):
+    """Тест проверяет, что изменения может внести только авторизованный пользователь."""
+    response = await async_client.post("/admin/about", data={"content": "Текст"})
+    assert response.status_code == 401
