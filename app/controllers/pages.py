@@ -1,5 +1,5 @@
 from fastapi import Depends, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -238,3 +238,17 @@ async def about(request: Request, session: AsyncSession = Depends(get_session)):
         name="about.html",
         context={"current_user": current_user, "about": about},
     )
+
+
+@router.get("/about/photo")
+async def about_photo(session: AsyncSession = Depends(get_session)):
+    """Отображает фото на странице 'Обо мне'."""
+    about_repo = AboutRepository(session)
+    about_service = AboutService(about_repo)
+
+    about = await about_service.get()
+
+    if about is None or about.photo is None:
+        raise HTTPException(status_code=404, detail="Фото не найдено")
+    else:
+        return Response(content=about.photo, media_type="image/jpeg")
