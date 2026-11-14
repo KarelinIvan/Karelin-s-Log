@@ -1000,3 +1000,13 @@ form {
     margin-bottom: 15px;
     text-indent: 30px;
 }
+
+.about-edit {}
+
+.about-edit__title {
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-3xl);
+    color: var(--color-black);
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+}
