@@ -966,14 +966,6 @@ form {
     white-space: pre-wrap;
 }
 
-.about-signature {
-    margin-top: 40px;
-    padding-top: 20px;
-    font-style: italic;
-    text-align: right;
-    color: var(--color-black);
-}
-
 .about-content .post-detail__description {
     line-height: 1.7;
     margin-bottom: 15px;

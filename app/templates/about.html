@@ -10,13 +10,17 @@
     <div class="about-content">
 
         <div class="about-intro">
-            <img src="/static/images/me.jpg" alt="Фото Ивана Карелина" class="about-photo">
-            <p class="post-detail__description">{{ about.content | safe }}</p>
+            {% if about and about.photo %}
+            <img src="/page/about/photo" alt="Фото Ивана Карелина" class="about-photo">
+            {% endif %}
+
+            {% if about %}
+                <p class="post-detail__description">{{ about.content | safe }}</p>
+            {% else %}
+                <p class="post-detail__description">Здесь будет информация обо мне</p>
+            {% endif %}
         </div>
 
-    <div class="about-signature">
-            <p>С уважением,<br>Иван Карелин!</p>
-    </div>
     </div>
 </article>
 
