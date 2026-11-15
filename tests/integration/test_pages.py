@@ -63,3 +63,18 @@ async def test_admin_about_post_unautorized(async_client):
     """Тест проверяет, что изменения может внести только авторизованный пользователь."""
     response = await async_client.post("/admin/about", data={"content": "Текст"})
     assert response.status_code == 303
+
+
+async def test_search_page_returns_results(async_client, search_post):
+    """Тест проверяет, что страница поиска отображает найденные посты."""
+    response = await async_client.get("/page/search", params={"query": "Python"})
+    assert response.status_code == 200
+    assert "Изучаем Python для начинающих" in response.text
+
+
+async def test_search_page_not_results(async_client, search_post):
+    """Тест проверяет, что страница поиска отображает заглушку если пост не найден."""
+    response = await async_client.get("/page/search", params={"query": "javascript"})
+    assert response.status_code == 200
+    assert "Изучаем Python для начинающих" not in response.text
+    assert "По вашему запросу ничего не найдено..." in response.text
