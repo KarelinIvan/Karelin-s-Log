@@ -121,3 +121,20 @@ class PostService:
             int: Количество опубликованных постов.
         """
         return await self.repo.count(published=published)
+
+    async def search_post(
+        self, query: str, skip: int = 0, limit: int = 10
+    ) -> list[Post]:
+        """
+        Метод выполняет поиск постов в базе данных по заголовку и описанию,
+        возвращает список постов.
+
+        Args:
+            query(str): Строка запроса пользователя.
+            skip (int): Сколько постов пропустить.
+            limit (int): Сколько постов вернуть.
+
+        Returns:
+            list[Post]: Возвращает список постов.
+        """
+        return await self.repo.search(query, skip, limit)
