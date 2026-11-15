@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.controllers import admin, pages, post  # noqa: F401 — регистрирует эндпоинты
@@ -24,6 +24,18 @@ app = FastAPI(lifespan=lifespan)
 async def root():
     """Перенаправляет с корня проекта на главную страницу блога."""
     return RedirectResponse(url="/page/")
+
+
+@app.exception_handler(HTTPException)
+async def redirect_auth_page(request: Request, exc: HTTPException):
+    """
+    Перенаправляет на страницу авторизации,если сессия истекла.
+    Иначе возвращает json ответ ошибки, с кодом ошибки.
+    """
+    if exc.status_code == 401:
+        return RedirectResponse(url="/admin/login", status_code=303)
+    else:
+        return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
