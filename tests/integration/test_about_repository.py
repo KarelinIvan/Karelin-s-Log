@@ -36,3 +36,20 @@ async def test_about_repository_update(test_session):
 
     about = await about_repo.update(data, {"content": "Тестовый текст" * 20})
     assert about.content == "Тестовый текст" * 20
+
+
+async def test_about_repository_keeps_photo(test_session):
+    """
+    Тест проверяет, что при изменении только текста about,
+    старое фото из бд не удаляется.
+    """
+    about_repo = AboutRepository(test_session)
+
+    data = About(content="текс" * 30, photo=b"\x00\x01\x02")
+    test_session.add(data)
+    await test_session.commit()
+    await test_session.refresh(data)
+
+    about = await about_repo.update(data, {"content": "Новый текст" * 20})
+    assert about.content == "Новый текст" * 20
+    assert about.photo == b"\x00\x01\x02"
