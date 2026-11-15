@@ -981,3 +981,21 @@ form {
     margin-bottom: 30px;
     padding-bottom: 20px;
 }
+
+/* Стили для страницы результатов поиска */
+.search {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.search_link {
+    text-decoration: none;
+    color: var(--color-black);
+    font-family: var(--font-family-Noto-serif);
+    font-style: italic;
+}
+
+.search_link:hover {
+    color: var(--color-blue);
+}
