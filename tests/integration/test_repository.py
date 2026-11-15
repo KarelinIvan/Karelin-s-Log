@@ -43,3 +43,47 @@ async def test_repository_get_by_id(test_session, sample_post):
     # Проверяем, что несуществующий ID возвращает None
     missing_post = await post_repo.get_by_id(9999)
     assert missing_post is None
+
+
+async def test_search_full_title_post(test_session, search_post):
+    """Тест проверяет поиск по полному совпадению заголовка."""
+    post_repo = PostRepository(test_session)
+
+    search = await post_repo.search("Изучаем Python для начинающих")
+    assert len(search) >= 1
+    assert search[0].title == search_post.title
+
+
+async def test_search_title_start_post(test_session, search_post):
+    """Тест проверяет, что поиск находит пост по совпадению первого слова в заголовке."""
+    post_repo = PostRepository(test_session)
+
+    search = await post_repo.search("Изучаем")
+    assert len(search) >= 1
+    assert search[0].title == search_post.title
+
+
+async def test_search_title_contains(test_session, search_post):
+    """Тест проверяет поиск по слову в середине заголовка."""
+    post_repo = PostRepository(test_session)
+
+    search = await post_repo.search("Python")
+    assert len(search) >= 1
+    assert search[0].title == search_post.title
+
+
+async def test_search_description(test_session, search_post):
+    """Тест проверяет поиск по описанию."""
+    post_repo = PostRepository(test_session)
+
+    search = await post_repo.search("программирования")
+    assert len(search) >= 1
+    assert search[0].description == search_post.description
+
+
+async def test_search_not_found(test_session, search_post):
+    """Тест проверяет, что нет совпадений ни в заголовке, ни в описании."""
+    post_repo = PostRepository(test_session)
+
+    search = await post_repo.search("java")
+    assert len(search) == 0
