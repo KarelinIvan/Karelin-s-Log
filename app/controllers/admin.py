@@ -179,7 +179,11 @@ async def admin_about_action(
     photo: UploadFile | None = File(None),
     session: AsyncSession = Depends(get_session),
 ):
-    """Выполняет обработку формы изменения данных страницы 'Обо мне'."""
+    """
+    Выполняет обработку формы изменения данных страницы 'Обо мне'.
+    Текст и фото обновляются независимо: если новое фото не передано,
+    старое остаётся в базе.
+    """
     about_repo = AboutRepository(session)
     about_service = AboutService(about_repo)
 
@@ -188,7 +192,7 @@ async def admin_about_action(
     data: dict[str, str | bytes] = {"content": content}
 
     photo_bytes = None
-    if photo is not None:
+    if photo is not None and photo.filename != "":
         photo_bytes = await photo.read()
         data["photo"] = photo_bytes
 
