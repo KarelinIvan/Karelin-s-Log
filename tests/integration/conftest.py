@@ -19,6 +19,20 @@ async def sample_post(test_session):
 
 
 @pytest.fixture
+async def search_post(test_session):
+    """Фикстура создает пост в таблице posts, для тестирования поиска."""
+    post = Post(
+        title="Изучаем Python для начинающих",
+        description="Отличный язык программирования",
+        published=True,
+    )
+    test_session.add(post)
+    await test_session.commit()
+    await test_session.refresh(post)
+    yield post
+
+
+@pytest.fixture
 async def async_client(test_engine):
     """Создаёт HTTP-клиент с подменой зависимости БД на тестовую."""
     # Создаём фабрику сессии

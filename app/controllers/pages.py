@@ -252,3 +252,32 @@ async def about_photo(session: AsyncSession = Depends(get_session)):
         raise HTTPException(status_code=404, detail="Фото не найдено")
     else:
         return Response(content=about.photo, media_type="image/jpeg")
+
+
+@router.get("/search", response_class=HTMLResponse)
+async def search(
+    request: Request,
+    query: str,
+    page: int = 1,
+    session: AsyncSession = Depends(get_session),
+):
+    """Выполняет поиск по запросу пользователя и отображает страницу результатов с пагинацией."""
+    post_repo = PostRepository(session)
+    post_service = PostService(post_repo)
+
+    limit = 10
+    skip = (page - 1) * limit
+
+    posts = await post_service.search_post(query, skip, limit)
+
+    current_user = get_current_user(request)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="search_results.html",
+        context={
+            "posts": posts,
+            "current_user": current_user,
+            "query": query,
+        },
+    )

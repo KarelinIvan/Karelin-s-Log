@@ -1,4 +1,5 @@
-from sqlmodel import col, func, select
+from sqlalchemy import case
+from sqlmodel import col, func, or_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Post
@@ -117,3 +118,30 @@ class PostRepository:
 
         result = await self.session.exec(query)
         return result.one()
+
+    async def search(
+        self,
+        query: str,
+        skip: int = 0,
+        limit: int = 10,
+    ) -> list[Post]:
+        """
+        Метод возвращает список постов из базы данных, при посике по заголовку или описанию.
+        """
+
+        statement = select(Post).where(
+            or_(Post.title.ilike(f"%{query}%"), Post.description.ilike(f"%{query}%"))
+        )
+
+        # Приоритет поиска по совпалениям
+        priority = case(
+            (col(Post.title) == query, 1),  # Заголовок полностью совпадает с запросом
+            (col(Post.title).ilike(f"{query}%"), 2),  # совпадение в начале заголовка
+            (col(Post.title).ilike(f"%{query}%"), 3),  # совпадение в середине заголовка
+            else_=4,  # совпадение только в описании
+        )
+
+        request = await self.session.exec(
+            statement.order_by(priority).offset(skip).limit(limit)
+        )
+        return list(request.all())

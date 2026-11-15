@@ -1,5 +1,3 @@
-from turtle import title
-from unittest import mock
 from unittest.mock import AsyncMock
 
 import pytest
@@ -44,3 +42,15 @@ async def test_update_post_sets_published_at_on_first_publish():
 
     assert "published_at" in update_data
     assert update_data["published_at"] is not None
+
+
+async def test_search_post_calls_repo():
+    """Юнит-тест: проверяет, что сервис передает параметры в репозиторий."""
+    mock_repo = AsyncMock()
+
+    mock_repo.search.return_value = ["Пост 1", "Пост 2"]
+    service = PostService(repo=mock_repo)
+
+    result = await service.search_post("Python", skip=0, limit=5)
+    assert result == ["Пост 1", "Пост 2"]
+    mock_repo.search.assert_awaited_once_with("Python", 0, 5)

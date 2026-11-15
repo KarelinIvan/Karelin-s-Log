@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Результаты поиска{% endblock %}
+{% block content %}
+    <h1 class="page-title divider-bottom">Результаты поиска</h1>
+    {% if posts %}
+        {% for post in posts %}
+            <div class="search">
+                <a class="search_link" href="/page/posts/{{ post.id }}" class="page-title">{{ post.title }}</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>По вашему запросу ничего не найдено...</p>
+    {% endif %}
+{% endblock %}
