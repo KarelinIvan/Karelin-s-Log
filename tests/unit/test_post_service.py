@@ -54,3 +54,14 @@ async def test_search_post_calls_repo():
     result = await service.search_post("Python", skip=0, limit=5)
     assert result == ["Пост 1", "Пост 2"]
     mock_repo.search.assert_awaited_once_with("Python", 0, 5)
+
+
+async def test_count_search_posts_calls_repo():
+    """Юнит-тест: проверяет, что сервис передает query в репозиторий и получает результат."""
+    mock_repo = AsyncMock()
+
+    mock_repo.count_search.return_value = 5
+    service = PostService(repo=mock_repo)
+    result = await service.count_search_posts("Python")
+    assert result == 5
+    mock_repo.count_search.assert_awaited_once_with("Python")
