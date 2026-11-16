@@ -127,6 +127,9 @@ class PostRepository:
     ) -> list[Post]:
         """
         Метод возвращает список постов из базы данных, при посике по заголовку или описанию.
+
+        Returns:
+            list[Post]: Возвращает список постов.
         """
 
         statement = select(Post).where(
@@ -145,3 +148,22 @@ class PostRepository:
             statement.order_by(priority).offset(skip).limit(limit)
         )
         return list(request.all())
+
+    async def count_search(self, query: str) -> int:
+        """
+        Метод для подсчёта количества найденных постов в поиске.
+
+        Args:
+            query(str): Строка запроса к базе данных.
+
+        Returns:
+            int: Возвращает количество найденных постов.
+        """
+        statement = or_(
+            Post.title.ilike(f"%{query}%"), Post.description.ilike(f"%{query}%")
+        )
+
+        result = await self.session.exec(
+            select(func.count()).select_from(Post).where(statement)
+        )
+        return result.one()

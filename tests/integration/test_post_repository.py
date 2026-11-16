@@ -87,3 +87,22 @@ async def test_search_not_found(test_session, search_post):
 
     search = await post_repo.search("java")
     assert len(search) == 0
+
+
+async def test_count_search_returns_corrent_count(test_session, search_post):
+    """Тест проверяет, что метод count_search правильно считает количество найденных постов."""
+    post_repo = PostRepository(test_session)
+
+    count = await post_repo.count_search("Python")
+    assert count == 1
+
+
+async def test_count_search_returns_zero(test_session, search_post):
+    """
+    Тест проверяет, что метод count_search возращает ноль,
+    если постов с нужным запросом не найдено.
+    """
+    post_repo = PostRepository(test_session)
+
+    count = await post_repo.count_search("Java")
+    assert count == 0

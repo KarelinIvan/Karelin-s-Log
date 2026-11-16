@@ -1,3 +1,6 @@
+from app.models.post import Post
+
+
 async def test_index_page(async_client):
     """Тест проверяет, что корректно открывается главная страница."""
     response = await async_client.get("/page/")
@@ -78,3 +81,23 @@ async def test_search_page_not_results(async_client, search_post):
     assert response.status_code == 200
     assert "Изучаем Python для начинающих" not in response.text
     assert "По вашему запросу ничего не найдено..." in response.text
+
+
+async def test_search_pagination(async_client, test_session):
+    """Тест проверяет, что на странице работает пагинация."""
+
+    number = 15
+    for post in range(number):
+        data = Post(title=f"Пост №{post}", description="Описание", published=True)
+        test_session.add(data)
+
+    await test_session.commit()
+    response_page_one = await async_client.get("/page/search?query=Пост&page=1")
+    assert response_page_one.status_code == 200
+    assert "Пост №0" in response_page_one.text
+    assert "Пост №10" not in response_page_one.text
+
+    response_page_two = await async_client.get("/page/search?query=Пост&page=2")
+    assert response_page_two.status_code == 200
+    assert "Пост №10" in response_page_two.text
+    assert "Пост №9" not in response_page_two.text
