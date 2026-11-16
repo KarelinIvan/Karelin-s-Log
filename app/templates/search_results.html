@@ -5,10 +5,27 @@
     {% if posts %}
         {% for post in posts %}
             <div class="search">
-                <a class="search_link" href="/page/posts/{{ post.id }}" class="page-title">{{ post.title }}</a>
+                <a class="search_link" href="/page/posts/{{ post.id }}">{{ post.title }}</a>
             </div>
         {% endfor %}
     {% else %}
         <p>По вашему запросу ничего не найдено...</p>
+    {% endif %}
+
+    <!-- Пагинация -->
+    {% if total_pages > 1 %}
+        <div class="pagination divider-top">
+            {% if page > 1 %}
+            <a href="/page/search?query={{ query }}&page={{ page - 1 }}" class="btn-primary">Назад</a>
+            {% else %}
+            <span class="btn-primary disabled">Назад</span>
+            {% endif %}
+            <span class="pagination__info">Страница {{ page }} из {{ total_pages }}</span>
+            {% if page < total_pages %}
+            <a href="/page/search?query={{ query }}&page={{ page + 1 }}" class="btn-primary">Далее</a>
+            {% else %}
+            <span class="btn-primary disabled">Далее</span>
+            {% endif %}
+        </div>
     {% endif %}
 {% endblock %}

@@ -994,6 +994,7 @@ form {
     color: var(--color-black);
     font-family: var(--font-family-Noto-serif);
     font-style: italic;
+    font-size: var(--text-xl);
 }
 
 .search_link:hover {
