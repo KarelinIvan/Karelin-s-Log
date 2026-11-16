@@ -270,6 +270,9 @@ async def search(
 
     posts = await post_service.search_post(query, skip, limit)
 
+    total_posts = await post_service.count_search_posts(query)
+    total_pages = (total_posts + limit - 1) // limit
+
     current_user = get_current_user(request)
 
     return templates.TemplateResponse(
@@ -279,5 +282,7 @@ async def search(
             "posts": posts,
             "current_user": current_user,
             "query": query,
+            "total_pages": total_pages,
+            "page": page,
         },
     )
