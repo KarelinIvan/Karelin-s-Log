@@ -138,3 +138,15 @@ class PostService:
             list[Post]: Возвращает список постов.
         """
         return await self.repo.search(query, skip, limit)
+
+    async def count_search_posts(self, query: str) -> int:
+        """
+        Метод возвращает количество найденных постов в поискке.
+
+        Args:
+            query(str): Строка запроса пользователя.
+
+        Returns:
+            int: Возвращает количество постов.
+        """
+        return await self.repo.count_search(query)
