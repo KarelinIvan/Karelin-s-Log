@@ -109,3 +109,44 @@ async def test_admin_action_delete(async_client, test_session):
 
     delete_post = await post_repo.get_by_id(post.id)
     assert delete_post is None
+
+
+async def test_verify_admin_invalid_cookie(async_client):
+    """
+    Тест проверяет, что при невалидной куке пользователя
+    перенаправляет на страницы авторизации.
+    """
+    async_client.cookies.set("admin_session", "invalid_token")
+    response = await async_client.get("/admin/about")
+    assert response.status_code == 303
+
+
+async def test_create_post_empty_title(async_client, test_session):
+    """Тест проверяет, что при создании поста с пустым заголовком пользователь получит ошибку 400."""
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
+    )
+    assert response_login.status_code == 303
+
+    response = await async_client.post(
+        "/admin/posts/create", data={"title": " ", "description": "Описание"}
+    )
+    assert response.status_code == 400
+
+
+async def test_create_post_title_exists(async_client, test_session):
+    """Тест проверяет, что при создании поста с занятым заголовком пользователь получит ошибку 409."""
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
+    )
+    assert response_login.status_code == 303
+
+    post_repo = PostRepository(test_session)
+    data = PostCreate(title="Заголовок занят", description="Описание")
+    await post_repo.create(data)
+
+    response = await async_client.post(
+        "/admin/posts/create",
+        data={"title": "Заголовок занят", "description": "Описание"},
+    )
+    assert response.status_code == 409

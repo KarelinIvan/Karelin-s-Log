@@ -101,3 +101,35 @@ async def test_search_pagination(async_client, test_session):
     assert response_page_two.status_code == 200
     assert "Пост №10" in response_page_two.text
     assert "Пост №9" not in response_page_two.text
+
+
+async def test_not_existent_page(async_client):
+    """Тест проверяет, что при переходе на несуществующую страницу будет код ошибки 404."""
+
+    response = await async_client.get("/page/not_page")
+    assert response.status_code == 404
+    assert response.headers["content-type"] == "application/json"
+
+
+async def test_edit_post_not_found(async_client):
+    """Тест проверяет, что при попытке отредактировать несуществующий пост будет ошибка 404."""
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
+    )
+    assert response_login.status_code == 303
+
+    response = await async_client.post(
+        "/page/posts/999/edit", data={"title": "Заголовок", "description": "Описание"}
+    )
+    assert response.status_code == 404
+
+
+async def test_delete_post_not_found(async_client):
+    """Тест проверяет, что при попытке удалить несуществующий пост будет ошибка 404."""
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
+    )
+    assert response_login.status_code == 303
+
+    response = await async_client.post("/page/posts/999/delete")
+    assert response.status_code == 404
