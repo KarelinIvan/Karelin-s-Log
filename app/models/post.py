@@ -1,11 +1,10 @@
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import func
 from sqlmodel import Field, Relationship
 
 from app.schemas.post_base import PostBase
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.post_image import PostImage
@@ -16,7 +15,7 @@ class Post(PostBase, table=True):
     ORM-модель таблицы «Post» в базе данных PostgreSQL.
 
     Args:
-        id (int):  Уникальный идентификатор поста. Является первичным ключом.
+        id (int|None):  Уникальный идентификатор поста. Является первичным ключом.
             Генерируется автоматически при создании записи.
         created_at (datetime): Дата создания поста.
             Заполняется текущим временем UTC при добавлении новой записи как
@@ -38,7 +37,7 @@ class Post(PostBase, table=True):
     # явно задаем название таблицы в бд
     __tablename__ = "posts"  # type: ignore
 
-    id: int = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
         nullable=False,
