@@ -23,7 +23,7 @@ class PostImage(SQLModel, table=True):
 
     __tablename__ = "post_images"  # type: ignore
 
-    id: int | None = Field(default=None, primary_key=True)
+    id: int = Field(default=None, primary_key=True)
     post_id: int = Field(foreign_key="posts.id", ondelete="CASCADE")
     image_data: bytes
     order: int = Field(default=0)

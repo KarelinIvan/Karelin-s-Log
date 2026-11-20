@@ -7,12 +7,14 @@ from app.controllers.dependencies import password_hash
 from app.controllers.pages import get_current_user
 from app.controllers.router import admin_router as router
 from app.controllers.router import auth_router
+from app.core.security import sanitize_html
 from app.core.settings import settings
 from app.core.templates import templates
 from app.database.repositories.about import AboutRepository
 from app.database.repositories.post import PostRepository
 from app.database.session import get_session
 from app.models.about import About
+from app.models.post_image import PostImage
 from app.schemas.post import PostCreate, PostUpdate
 from app.services.about_service import AboutService
 from app.services.exceptions import TitleAlreadyExistsError, TitleEmptyError
@@ -42,17 +44,48 @@ async def create_post_action(
     title: str = Form(),
     description: str = Form(),
     published: bool = Form(False),
+    content: str = Form(None),
+    video_url: str = Form(None),
+    cover_image: UploadFile | None = File(None),
+    gallery_images: list[UploadFile] = File([]),
     session: AsyncSession = Depends(get_session),
 ):
     """Обрабатывает форму создания поста."""
     post_repo = PostRepository(session)
     post_service = PostService(post_repo)
 
+    clean_text = sanitize_html(content)
+
+    # Обработка обложки поста
+    cover_data = None
+    if cover_image is not None and cover_image.filename != "":
+        cover_data = await cover_image.read()
+
     # Создаём данные для сервиса (PostCreate)
-    data = PostCreate(title=title, description=description, published=published)
+    data = PostCreate(
+        title=title,
+        description=description,
+        published=published,
+        content=clean_text,
+        video_url=video_url,
+    )
 
     try:
-        await post_service.create_post(data)
+        post = await post_service.create_post(data)
+
+        # Если обложка загружена, добавляем ее к посту
+        if cover_data is not None:
+            post.cover_image = cover_data
+
+        # Обработка галереи
+        assert post.id is not None
+        for i, image in enumerate(gallery_images):
+            if image is not None and image.filename != "":
+                image_bytes = await image.read()
+                new_image = PostImage(post_id=post.id, image_data=image_bytes, order=i)
+                session.add(new_image)
+        await session.commit()
+
     except TitleEmptyError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except TitleAlreadyExistsError as e:

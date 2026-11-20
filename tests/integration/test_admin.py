@@ -1,4 +1,7 @@
+from sqlmodel import select
+
 from app.database.repositories.post import PostRepository
+from app.models.post import Post
 from app.schemas.post import PostCreate
 
 
@@ -150,3 +153,32 @@ async def test_create_post_title_exists(async_client, test_session):
         data={"title": "Заголовок занят", "description": "Описание"},
     )
     assert response.status_code == 409
+
+
+async def test_admin_create_post_with_files(async_client, test_session):
+    """Тест проверяет, что при создании поста обложка загружается корректно."""
+    response_login = await async_client.post(
+        "/admin/login", data={"username": "admin", "password": "testpassword"}
+    )
+    assert response_login.status_code == 303
+
+    # Тестовые байты обложки (минимальный PNG 1x1)
+    cover_data = b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde"
+
+    response = await async_client.post(
+        "/admin/posts/create",
+        data={
+            "title": "Заголовок",
+            "description": "Описание",
+            "content": "<p>Содержание</p>",
+        },
+        files={"cover_image": ("image.png", cover_data, "image/png")},
+    )
+    assert response.status_code == 303
+
+    result = await test_session.exec(select(Post).where(Post.title == "Заголовок"))
+    found = result.one()
+
+    assert found is not None
+    assert found.cover_image is not None
+    assert found.cover_image == cover_data
