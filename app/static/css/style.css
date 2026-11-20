@@ -82,6 +82,13 @@ form {
     margin: 0;
 }
 
+mark {
+    color: var(--color-black);
+    padding: 0 4px;
+    border-radius: 3px;
+    background-color: transparent;
+}
+
 
 /* Универсальные стили для форм */
 .form-control {
@@ -991,12 +998,16 @@ form {
 
 .search_link {
     text-decoration: none;
-    color: var(--color-black);
+    color: var(--color-grey);
     font-family: var(--font-family-Noto-serif);
     font-style: italic;
     font-size: var(--text-xl);
 }
 
 .search_link:hover {
+    color: var(--color-blue);
+}
+
+.search_link:hover mark {
     color: var(--color-blue);
 }

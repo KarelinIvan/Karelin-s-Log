@@ -5,7 +5,9 @@
     {% if posts %}
         {% for post in posts %}
             <div class="search">
-                <a class="search_link" href="/page/posts/{{ post.id }}">{{ post.title }}</a>
+                <a class="search_link" href="/page/posts/{{ post.id }}">
+                    {{ post.title | highlight(query) }}
+                </a>
             </div>
         {% endfor %}
     {% else %}
