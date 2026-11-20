@@ -1,9 +1,14 @@
 from datetime import UTC, datetime
 
 from sqlalchemy import func
-from sqlmodel import Field
+from sqlmodel import Field, Relationship
 
 from app.schemas.post_base import PostBase
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.post_image import PostImage
 
 
 class Post(PostBase, table=True):
@@ -24,6 +29,10 @@ class Post(PostBase, table=True):
             дефолт для корректной работы ORM.
         published_at (datetime): Дата публикации, по умолчанию None.
             Дата устанавливается при публикации поста.
+        content (str|None): HTML-содержание поста или None.
+        cover_image (bytes|None): Обложка поста или None.
+        video_url (str|None): Ссылка на видео.
+        images (list["PostImage"]): Галерея фотографий.
     """
 
     # явно задаем название таблицы в бд
@@ -48,4 +57,20 @@ class Post(PostBase, table=True):
         default=None,
         nullable=True,
         description="Дата публикации",
+    )
+    content: str | None = Field(
+        default=None,
+        description="HTML-содержание поста",
+    )
+    cover_image: bytes | None = Field(
+        default=None,
+        description="Обложка поста",
+    )
+    video_url: str | None = Field(
+        default=None,
+        description="Ссылка на видео",
+    )
+    images: list["PostImage"] = Relationship(
+        back_populates="post",
+        sa_relationship_kwargs={"lazy": "selectin", "cascade": "all, delete-orphan"},
     )
