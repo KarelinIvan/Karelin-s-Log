@@ -1,4 +1,4 @@
-from sqlalchemy import case
+from sqlalchemy import and_, case
 from sqlmodel import col, func, or_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -133,7 +133,12 @@ class PostRepository:
         """
 
         statement = select(Post).where(
-            or_(Post.title.ilike(f"%{query}%"), Post.description.ilike(f"%{query}%"))
+            and_(
+                Post.published.is_(True),
+                or_(
+                    Post.title.ilike(f"%{query}%"), Post.description.ilike(f"%{query}%")
+                ),
+            )
         )
 
         # Приоритет поиска по совпалениям
@@ -159,8 +164,9 @@ class PostRepository:
         Returns:
             int: Возвращает количество найденных постов.
         """
-        statement = or_(
-            Post.title.ilike(f"%{query}%"), Post.description.ilike(f"%{query}%")
+        statement = and_(
+            Post.published.is_(True),
+            or_(Post.title.ilike(f"%{query}%"), Post.description.ilike(f"%{query}%")),
         )
 
         result = await self.session.exec(
